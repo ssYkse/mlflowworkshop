@@ -1,0 +1,5 @@
+name: mlflow Workshop 
+
+conda_env: env.yaml
+
+entry_points:
