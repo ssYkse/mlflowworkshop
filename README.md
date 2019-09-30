@@ -27,7 +27,11 @@ Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir ein 'entry-po
 
     mlflow run --entry-point=get_data ./
 
-Nun ist mnist heruntergeladen, aber noch nicht im richtigen format.
+Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat - mehr dazu später.
+
+## Preprocessing
+
+
 
 
 

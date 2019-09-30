@@ -5,3 +5,5 @@ conda_env: env.yaml
 entry_points:
   get_data:
     command: "python download.py ./data/mnist/" 
+  explore_data:
+    command: "python explore.py ./data/mnist/"
