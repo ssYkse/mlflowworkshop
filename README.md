@@ -29,7 +29,13 @@ Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir ein 'entry-po
 
 Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat - mehr dazu später.
 
-## Preprocessing
+## Exploration
+
+Nach dem download der daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. 
+
+    mlflow run ./ -e explore_data
+
+Wesentlich ist aber das wir die Bilder noch ins richtige Format bringen müssen. 
 
 
 
