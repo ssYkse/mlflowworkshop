@@ -12,3 +12,10 @@ entry_points:
       mean: {type: float, default: 33.318}
       std: {type: float, default: 78.567}
     command: "python preprocess.py ./data/mnist/ {mean} {std}"
+  train:
+    parameters:
+      batch_size: {type: int, default: 32}
+      epochs: {type: int , default: 3}
+      lr: {type: float, default: 0.001}
+      input_dir: {type: str, default: ./mlruns/0/38d0e23c76c34e61b83f494ee3a720af/artifacts}
+    command: "python train.py {batch_size} {epochs} {lr} {input_dir}"
