@@ -8,6 +8,11 @@ Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen -
 
 ## Vorbereitung
 
+Wir richten ein neues conda envirnment ein
+
+    conda create -n mlflowenv python=3.6
+    source activate mlflowenv
+
 Zu allererst brauchen wir mlflow. Das ist einfach mittles conda oder pip heruterzuladen:
 
     conda install mlflow
@@ -39,7 +44,7 @@ Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-
 
 und führen es aus:
 
-    mlflow run --entry-point=get_data ./
+    mlflow run ./ -e get_data
 
 Dies war unser erster mlflow run. Siehe
 
@@ -47,11 +52,11 @@ Dies war unser erster mlflow run. Siehe
    
 für mehr info. Insbesondere das './' sagt mlflow, dass in der cwd das MLProject file zu betrachten ist.
 
-Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat - mehr dazu später.
+Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat. Beim herumstöbern im Ordner sehen wir eine Ordnerstruktur mit Dateien, welche versuchen aufzuzeichen was passiert ist.
 
 ## Exploration
 
-Nach dem download der daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. 
+Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. In expore.py betrachen wir mean und std der Daten, und führen das script wieder mit mlflow aus:
 
     mlflow run ./ -e explore_data
 
