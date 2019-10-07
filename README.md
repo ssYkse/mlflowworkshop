@@ -112,7 +112,32 @@ flavors:
 run_id: e7e2b49396c94bc5a887bd201ae0eb6c
 utc_time_created: '2019-10-07 12:38:35.320207'
 
+## Packaging the Model
+
+Es gibt die möglichkeit das keras modell, so wie wir es gespeichert haben in einem Server zur Verfügung zu stellen. Das Problem dabei ist leider, das mlflow server nur pandas dataframs welche in einem speziellen json format gespeichert sind entgegen nehmen.
+Wenn z.b. img ein 2D Numpy array ist, dann kann man dies durch
+
+    df = pd.DataFrame(img)
+
+    df.to_json('./example.json', orient='split')
+
+gelingen.
+Bei 3D arrays ist dies leider schwieriger. Und unser Keras modell erwartet sogar 4D input tensoren (batch_size,28,28,1)!
+Daher müssen wir selber uns darum kümmern, dass das Modell richtig gefüttert wird. Vorhin haben wir mlflow.keras.log_model genutzt um das model zu speichern. Nun nutzen wir mlflow.pyfunc. Was ist PyFunc? Mlflow erlaubt es einem beliebige classen zu speichern, welche ein paar methoden haben (z.b. predict, ). 
+
+Später ist mlflow dann dazu in der Lage, diese Modelle zu laden und als server anzubieten - aber man ist nicht gezwungen mlflow server zu nutzen, man kann auch seine eigenen schreiben.
 
 
+### Schritt 1
+
+Model Erstellen
+
+### Schritt 2
+
+Model Speichern
+
+### Schritt 3
+
+Model Serving
 
 

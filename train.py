@@ -73,6 +73,7 @@ model.fit(x_train, y_train,
 # Evaluate model
 score = model.evaluate(x_test, y_test, verbose=0)
 
+mlflow.set_tag('input_data', args.input_dir)
 mlflow.log_metric('loss', score[0])
 mlflow.log_metric('accuracy', score[1])
 mlflow.keras.log_model(model, "myModel")
