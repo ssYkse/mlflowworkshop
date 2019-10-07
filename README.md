@@ -130,14 +130,47 @@ Später ist mlflow dann dazu in der Lage, diese Modelle zu laden und als server 
 
 ### Schritt 1
 
-Model Erstellen
+Betrachten wir package_model.py. Unten sehen wir, dass wir ein MyPipeModel instanzieren und auch speichern, undzwar in dem Verszeichnis ./model.
+Alternativ könnten wir es natürlich wieder als artefakt in einem mlrun speichern. Da es aber das ende des prozesses ist, habe ich mich dagegen entschlossen.
+
+In '__init__' wird zurückverfolgt was mean und std waren (dies ist sicherlich nicht die eleganteste art, jedoch funktioniert es). Außerdem wird das keras model geladen und in self.model gespeichert.
+
+In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in die richtige dimension gebracht und mittels preprocess normalisiert. Schließlich bentuzen wir das keras model, und geben results zurück. Wie das json zu einem pd.Dataframe umgewandelt wird, und wie die Ergebnisse nach return zurückgeschickt werden, interessiert uns nicht weiter. Das übernimmt mlflows server.
+
 
 ### Schritt 2
 
-Model Speichern
+Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen. Betrachten wir das resultierende model: das python_model.pkl ist einfach die unten inizierte Klasse gespeichert, und das MLmodel file
+
+    flavors:
+      python_function:
+        cloudpickle_version: 1.2.2
+        env: conda.yaml
+        loader_module: mlflow.pyfunc.model
+        python_model: python_model.pkl
+        python_version: 3.6.9
+    utc_time_created: '2019-10-07 16:09:52.949232'
+
+verrät uns, wie mlflow mit diem model umgeht. Vorhin war das python_model (python_model.pkl) durch ein module_loader (mlflow.keras) ersetzt. 
+
 
 ### Schritt 3
 
-Model Serving
+Der letzte Schritt ist der einfachste. Mit 
+
+    mlflow models serve -m ./model
+
+setzen wir einen server auf.
+
+Schicken wir ein Post request an localhost:5000/invocations mit 
+
+{"columns":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],"data":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,72,191,96,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,72,239,255,247,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,231,255,255,255,0,0,0,72,191,96,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,72,255,255,255,151,0,0,0,231,255,247,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,72,239,255,255,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,72,239,255,255,255,151,0,0,0,72,255,255,255,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,231,255,255,255,151,0,0,0,0,231,255,255,255,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,72,255,255,255,151,0,0,0,0,0,255,255,255,151,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,231,255,255,255,0,0,0,0,0,104,255,255,255,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,72,255,255,255,151,0,0,0,0,0,231,255,255,167,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,231,255,255,255,0,0,0,0,0,0,255,255,255,8,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,223,96,0,0,0,0,0,0],[0,0,0,0,0,247,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,223,96,0,0,0,0],[0,0,0,0,0,120,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,247,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,120,255,255,255,151,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,247,255,255,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,120,255,151,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}
 
 
+als body, so erhalten wir
+    
+    [
+        4
+    ]
+
+als Antwort.
