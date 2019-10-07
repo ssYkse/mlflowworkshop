@@ -7,3 +7,8 @@ entry_points:
     command: "python download.py ./data/mnist/" 
   explore_data:
     command: "python explore.py ./data/mnist/"
+  preprocess:
+    parameters:
+      mean: {type: float, default: 33.318}
+      std: {type: float, default: 78.567}
+    command: "python preprocess.py ./data/mnist/ {mean} {std}"

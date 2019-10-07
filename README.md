@@ -4,9 +4,13 @@ Es geht darum ein Keras Model zu trainieren, welches MNIST Nummern klassifiziere
 
 Wenn wir das Model trainieren, möchten wir hyperparameter tuning betreiben, um zu testen welche parameter gut sind. Natürlich möchten wir so übersichtlich wie möglich alle Trainings Hyperparameter aufzeichnen, sowie die trainierten Modelle und evtl. andere nützliche Sachen.
 
-Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen - und zwar mit so wenig builerplate code wie möglich. Oft müssen vor der Modelinference noch gewisse preprocessing steps gemacht werden, um die daten in das richtige format zu bringen. 
+Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen - und zwar mit so wenig boilerplate code wie möglich. Oft müssen vor der Modelinference noch gewisse preprocessing steps gemacht werden, um die daten in das richtige format zu bringen. 
 
 ## Vorbereitung
+
+Zu allererst brauchen wir mlflow. Das ist einfach mittles conda oder pip heruterzuladen:
+
+    conda install mlflow
 
 Mit einem frischen conda environment in einem leeren Ordner müssen wir für das Nutzen von mlflow erstmals ein paar Datein anlegen.
 
@@ -18,14 +22,30 @@ Des weiteren brauchen wir ein
 
     MLProject
 
-file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur beschrieben welches conda environment benutzt werden soll, und wie dieses projekt heißt.
+file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur beschrieben welches conda environment benutzt werden soll, und wie dieses projekt heißt:
+
+    name: mlflow Workshop 
+
+    conda_env: env.yaml
 
 ## Download Data
 
 Im ersten Schritt geht es darum, eine download pipeline zu erstellen. Da mnist durch Keras schon sehr einfach runterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
-Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir ein 'entry-point' zum MLproject, namens get_data, und führen es aus:
+Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-point' zum MLproject: get_data;
+
+    entry_points:
+      get_data:
+        command: "python download.py ./data/mnist/" 
+
+und führen es aus:
 
     mlflow run --entry-point=get_data ./
+
+Dies war unser erster mlflow run. Siehe
+
+    mlflow run --help
+   
+für mehr info. Insbesondere das './' sagt mlflow, dass in der cwd das MLProject file zu betrachten ist.
 
 Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat - mehr dazu später.
 
@@ -35,7 +55,28 @@ Nach dem download der daten müssen wir gucken, was wir überhaupt haben. Der MN
 
     mlflow run ./ -e explore_data
 
-Wesentlich ist aber das wir die Bilder noch ins richtige Format bringen müssen. 
+Wesentlich ist aber das wir die Bilder noch normalisiert werden müssen.
+
+## Preprocess
+
+Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später möchten wir, dass das preprocessing automatisch passiert, wenn wir ein Bild an unseren ML-Server schicken. Daher verpacken wir den nächsten Schritt in mehr als nur einem Script.
+
+    mlflow run ./ -e explore_data
+
+TODO: make function preprocess. 
+
+Desweiteren speichern wir die behandelten MNIST daten nicht einfach in ./data/... ab, sondern lassen mlflow sich darum kümmern. Der grund dafür ist, dass die daten parameter abhängig sind (mean/std.), und daher ein teil der pipeline sind. Falls wir mean/std ändern, darf das nicht vergessen werden! Zum abspeichern der behandelten Daten führen wir
+
+    mlflow.log_artifacts(tempdir)
+
+im python script aus. Hier haben wir die Python API benutzt. Mehr dazu finden wir auf https://mlflow.org/docs/latest/python_api/index.html.
+
+Lasst uns nun die Ergebnisse betrachten. Wir schauen uns den Ordner mlruns/0/...ID.../artifacts an, und sehen, dass wir dort die Daten haben. Ausserdem haben wir noch andere Informationen bezüglich diesem run, wie z.b. die parameter mean und std.
+
+
+
+
+
 
 
 
