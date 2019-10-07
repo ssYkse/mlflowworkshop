@@ -29,11 +29,10 @@ y_train = np.load(opj(args.input_dir, 'y_train.npy'))
 x_test = np.load(opj(args.input_dir, 'x_test.npy'))
 y_test = np.load(opj(args.input_dir, 'y_test.npy'))
 
-
-x_train = x_train[:6000]
-y_train = y_train[:6000]
-x_test = x_test[:100]
-y_test = y_test[:100]
+#x_train = x_train[:6000]
+#y_train = y_train[:6000]
+#x_test = x_test[:100]
+#y_test = y_test[:100]
 
 # input image dimensions
 img_rows, img_cols = x_train.shape[1], x_train.shape[2]
