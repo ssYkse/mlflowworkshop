@@ -63,6 +63,8 @@ Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später mö
 
     mlflow run ./ -e explore_data
 
+Hier sind in MLProject die Parameter angegeben!
+
 TODO: make function preprocess. 
 
 Desweiteren speichern wir die behandelten MNIST daten nicht einfach in ./data/... ab, sondern lassen mlflow sich darum kümmern. Der grund dafür ist, dass die daten parameter abhängig sind (mean/std.), und daher ein teil der pipeline sind. Falls wir mean/std ändern, darf das nicht vergessen werden! Zum abspeichern der behandelten Daten führen wir
