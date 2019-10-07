@@ -16,10 +16,10 @@ entry_points:
     parameters:
       batch_size: {type: int, default: 32}
       epochs: {type: int , default: 3}
-      lr: {type: float, default: 0.001}
+      lr: {type: float, default: 0.01}
       input_dir: {type: str, default: ./mlruns/0/6b3dda95d0004fb9a297088577d7eabe/artifacts}
     command: "python train.py {batch_size} {epochs} {lr} {input_dir}"
   package:
     parameters:
-      model_dir: {type: str, default: ./mlruns/0/7e3423043f2d4e6e9badaeb517020589/artifacts/myModel}
+      model_dir: {type: str, default: ./mlruns/0/8ee5281b47bc40ef8f569ccca60e2521/artifacts/myModel}
     command: "rm -rf ./model && python package_model.py {model_dir}"
