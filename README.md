@@ -15,9 +15,9 @@ Wir richten ein neues conda envirnment ein
 
 Zu allererst brauchen wir mlflow. Das ist einfach mittles conda oder pip heruterzuladen:
 
-    conda install mlflow
+    pip install mlflow
 
-Mit einem frischen conda environment in einem leeren Ordner müssen wir für das Nutzen von mlflow erstmals ein paar Datein anlegen.
+Mit einem frischen conda environment in einem leeren Ordner müssen wir für das Nutzen von mlflow erstmals ein paar Datein anlegen. Da ein solches environment schon in der git repo ist, überspringen wir diesen Schritt. 
 
     conda env export > env.yaml
 
@@ -80,10 +80,37 @@ im python script aus. Hier haben wir die Python API benutzt. Mehr dazu finden wi
 
 Lasst uns nun die Ergebnisse betrachten. Wir schauen uns den Ordner mlruns/0/...ID.../artifacts an, und sehen, dass wir dort die Daten haben. Ausserdem haben wir noch andere Informationen bezüglich diesem run, wie z.b. die parameter mean und std.
 
+## Training and Logging
 
+In train.py wird ein Keras Modell trainiert, welches mit den command line argumenten angepasst werden kann - hier eigentlich nur die learning rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält denau die MNIST daten welche vorhin durch preprocessing erzeugt wurden.
 
+    mlflow run ./ -e train
 
+Lässt trainiert das Modell. Am ende von train.py werden noch drei mlflow commands aus der Python API ausgeführt:
 
+    mlflow.log_metric('loss', score[0])
+    mlflow.log_metric('accuracy', score[1])
+    mlflow.keras.log_model(model, "myModel")
+
+Wie vorhin, als die behandleten MNIST daten als Artifakte abgespeichert wurden, speichert wir hier Trainingsergebnisse und das Keras Modell. Zu finden sind diese date dann im mlruns Experimentordner unter .../metrics und .../artifacts/myModel.
+
+Betrachten wir myModel genauer, so sehen wir das in .../myModel/data ein model.h5 gespeichert ist (das Keras Modell) und in .../myModel/conda.yaml steht, was für ein Conda environment gebraucht wird um dieses Model laufen zu lassen.
+
+Als letztes sehen wir das MLModel file, welches alles zusammen bringt:
+
+artifact_path: myModel
+flavors:
+  keras:
+    data: data
+    keras_module: keras
+    keras_version: 2.3.0
+  python_function:
+    data: data
+    env: conda.yaml
+    loader_module: mlflow.keras
+    python_version: 3.6.9
+run_id: e7e2b49396c94bc5a887bd201ae0eb6c
+utc_time_created: '2019-10-07 12:38:35.320207'
 
 
 
