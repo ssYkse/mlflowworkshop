@@ -279,5 +279,27 @@ Wieder müssten wir das modell optimieren, jedoch belassen wir es bei nur einem 
 
 Serving funktioniert wie bekannt. Erst package, dann serve:
 
+    mlflow run . -e package -P model_dir=./mlruns/2/0f7c143bf1ca4fe1bd51df4ff1e20029/artifacts/myModel --experiment-name=fashion
+
+    mlflow models serve -m ./model/
+
+Schon können wir mit Paint wieder anfangen zu zeichenen!
+
+    python png_to_pandas ./Img-Name.png
     
+    curl -d "@example.json" -h 'Content-Type: application/json-numpy-split' localhost:5000/invocations
+
+0 - T-shirt/Top
+1 - Trouser
+2 - Pullover 
+3 - Dress
+4 - Coat
+5 - Sandal
+6 - Shirt
+7 - Sneaker
+8 - Bag
+9 - Ankle boot
+
+
+
 
