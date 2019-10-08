@@ -264,3 +264,20 @@ Der download.py code und der MLProject run müssen leicht angepasst werden. Dann
     mlflow run . -e get_data -P type=fashion -P outdir=data/mnist-fashion/  --experiment-name=fashion
 
 (Auf grund der Proxy-Situation musste ich leider wieder per hand mnist-fashion herunterladen).
+Betracthe mnist fashion mit 
+
+    mlflow run . -e explore_data -P in_data=./data/mnist-fashion/ --experiment-name=fashion
+
+Die Trainingsdaten haben mean=72.940 und std=90.021.
+Diese übernehmen wir fürs preprocessing:
+
+    mlflow run . -e preprocess -P in_data=./data/mnist-fashion/ -P mean=72.94 -P std=90.021 --experiment-name=fashion
+
+Wieder müssten wir das modell optimieren, jedoch belassen wir es bei nur einem durchgang:
+
+    mlflow run . -e train -P input_dir=./mlruns/2/c5757d3e88894d24b940cc42bec70613/artifacts --experiment-name=fashion
+
+Serving funktioniert wie bekannt. Erst package, dann serve:
+
+    
+
