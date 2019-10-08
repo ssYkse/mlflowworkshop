@@ -4,12 +4,21 @@ import argparse
 import mlflow.keras
 import keras
 from os.path import join as opj
-from preprocess import preprocess
+import base64
+#from preprocess import preprocess
 
 parser = argparse.ArgumentParser(description='Train a Keras model for MNIST.')
 parser.add_argument('model_dir', type=str,
                     help='model dir of a training run.')
 args = parser.parse_args()
+
+def preprocess(x_train, mean, std):
+    #Normalize data
+    x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], x_train.shape[2], 1).astype('float32')
+    x_train = x_train - mean
+    x_train = x_train / std
+
+    return x_train
 
 class MyPipeModel(mlflow.pyfunc.PythonModel):
     import keras
@@ -20,7 +29,7 @@ class MyPipeModel(mlflow.pyfunc.PythonModel):
     def __init__(self, path):
         self.keras_path= path
         self.model = mlflow.keras.load_model(path)
-
+        self.pre = preprocess
         input_data = opj(path,'../../tags/input_data')
         read_data = ''
 
@@ -37,10 +46,14 @@ class MyPipeModel(mlflow.pyfunc.PythonModel):
 
     
     def predict(self, context, model_input):
+        print("Prediction!")
+
         x = model_input.to_numpy()
-        x = preprocess(x.reshape(1,28,28), self.mean, self.std)
+        x = self.pre(x.reshape(1,28,28), self.mean, self.std)
+
         results = self.model.predict_classes(x)
 
+       # return results
         return results
 
     def save(self, model_path):
