@@ -9,12 +9,15 @@ entry_points:
       outdir: {type: str, default: ./data/mnist}
     command: "python download.py {type} {outdir}"
   explore_data:
-    command: "python explore.py ./data/mnist/"
+    parameters:
+      in_data: {type: str, default: ./data/mnist/}
+    command: "python explore.py {in_data}"
   preprocess:
     parameters:
       mean: {type: float, default: 33.318}
       std: {type: float, default: 78.567}
-    command: "python preprocess.py ./data/mnist/ {mean} {std}"
+      in_data: {type:str, deafult: ./data/mnist/}
+    command: "python preprocess.py {in_data} {mean} {std}"
   train:
     parameters:
       batch_size: {type: int, default: 32}
