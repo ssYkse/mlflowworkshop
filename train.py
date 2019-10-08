@@ -19,6 +19,8 @@ parser.add_argument('epochs', type=int,
                     help='Nr. of epochs to train for.')
 parser.add_argument('lr', type=float,
                     help='Learning rate for training.')
+parser.add_argument('nr_conv_1', type=int,
+                    help='Nr. of convolutions in the first conv layer')
 parser.add_argument('input_dir', type=str,
                     help='artifact dir of a preprocessing run.')
 args = parser.parse_args()
@@ -29,10 +31,10 @@ y_train = np.load(opj(args.input_dir, 'y_train.npy'))
 x_test = np.load(opj(args.input_dir, 'x_test.npy'))
 y_test = np.load(opj(args.input_dir, 'y_test.npy'))
 
-x_train = x_train[:6000]
-y_train = y_train[:6000]
-x_test = x_test[:100]
-y_test = y_test[:100]
+#x_train = x_train[:6000]
+#y_train = y_train[:6000]
+#x_test = x_test[:100]
+#y_test = y_test[:100]
 
 # input image dimensions
 img_rows, img_cols = x_train.shape[1], x_train.shape[2]
@@ -45,7 +47,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 # define model
 model = Sequential()
-model.add(Conv2D(32, kernel_size=(3, 3),
+model.add(Conv2D(args.nr_conv_1, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=input_shape,
                  name='input-conv1'))
@@ -62,6 +64,7 @@ model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(learning_rate=args.lr),
               metrics=['accuracy'])
 
+print("\n\n\n\n\nTraining with:", args.nr_conv_1 ,"nr of convoltions\n\n\n\n\n")
 # Train Model
 model.fit(x_train, y_train,
           batch_size=args.batch_size,
