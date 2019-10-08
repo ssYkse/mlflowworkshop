@@ -174,3 +174,41 @@ als body, so erhalten wir
     ]
 
 als Antwort.
+
+
+### Schritt 4 (TODO, Tensorflow in Docker gibt probleme)
+
+Um nun ein Docker Image zu bauen, reicht folgender Command
+
+    mlflow models build-docker -m ./model -n "my-image"
+
+(Ich musste als USER der docker gruppe angehören (https://docs.docker.com/install/linux/linux-postinstall/) und Mobile Hotspot nutzen)
+
+Mit 
+
+    docker run -p 5001:8080 "my-image"
+
+können wir nun einen containe starten, und wie im vorherigen Schritt nutzen.
+
+### Schritt 5
+
+Wir nutzen Paint um ein 28x28 großes grayscale Bild einer Zahl zu malen, und Speichern dieses Bild ab. Dann convertieren wir das .png in das vorhergesehene .json Format mittles
+
+    python png_to_pandas ./Img-Name.png
+
+welches den output in example.json speichert.
+Diesen output können wir dann verschicken.
+
+    curl -d "@example.json" -h 'Content-Type: application/json-numpy-split' localhost:5000/invocations
+
+(hier habe ich wieder den lokalen mlflow server genommen (port 5000))
+Die MLflow Rest API erlaubt es einem nur den Request in ein paar bestimmten Formaten zu tätigen. 
+['text/csv', 'application/json', 'application/json; format=pandas=records', 'application/json; format=pands-split', 'application/json-numpy-split'] sind alle möglichkeiten. Dies ist blöd, und wird in den Foren auch diskutiert. Ich hoffe, dass es dort bald Änderungen gibt.
+
+## Modell Optimieren
+
+Wir sind glücklich, da wir ein REST server haben, der uns innerhalb 2 schnellen commands ein .png auswerten kann. Jedoch sind die Ergebnisse alle falsch. Wir möchten nun ein paar Parameter ausprobieren, um ein gutes modell zu erstellen.
+
+Dazu ändern wir train.py, und erlauben ein paar paramter.
+
+
