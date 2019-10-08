@@ -239,7 +239,7 @@ können wir nun ein paar trainings unter diesem experiment laufen lassen. Um die
 
 Öffnen wir nun unseren browser zu localhost:5002 sehen wir auf der linken zwei experiments. Ein mal Default, wo alle bisherigen 'mlflow run ...' zu finden sind, und conv1 mit den neuen experimenten.
 
-## Bestes Modell wählen
+## Bestes Modell wählen 
 
 Wir schauen uns die Ergebnisse an, und sehen das model X am besten ist. Die run URI beginnt nun mit /1/, da dies nicht mehr das default Experiment ist. Um das model zu Packagen nutzen wir wieder
 
@@ -253,3 +253,14 @@ Wieder mit Paint und curl können wir mit dem Modell spielen.
 
 ## MNIST Fashion
 
+Nun haben wir vom Kunden neue Daten bekommen, oder das Prototy Modell hat den Kunden überzeugt, und das Modell soll nun auf den echten Daten arbeiten - hier MNIST Fashion.
+
+Es bietet sich wieder an, ein neues experiment zu starten
+
+    mlflow experiments create -n fashion
+
+Der download.py code und der MLProject run müssen leicht angepasst werden. Dann kann mit 
+
+    mlflow run . -e get_data -P type=fashion -P outdir=data/mnist-fashion/  --experiment-name=fashion
+
+(Auf grund der Proxy-Situation musste ich leider wieder per hand mnist-fashion herunterladen).

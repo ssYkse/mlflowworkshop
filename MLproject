@@ -4,7 +4,10 @@ conda_env: env.yaml
 
 entry_points:
   get_data:
-    command: "python download.py ./data/mnist/" 
+    parameters:
+      type: {type: str, default: number}
+      outdir: {type: str, default: ./data/mnist}
+    command: "python download.py {type} {outdir}"
   explore_data:
     command: "python explore.py ./data/mnist/"
   preprocess:
