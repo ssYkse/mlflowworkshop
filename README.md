@@ -211,4 +211,45 @@ Wir sind glücklich, da wir ein REST server haben, der uns innerhalb 2 schnellen
 
 Dazu ändern wir train.py, und erlauben ein paar paramter.
 
+Es sind also epochs, lr und nr_conv_1 parameter welche das endgültige Modell beinflussen. Auch das MLProject muss angepasst werden.
+
+    train:
+      parameters:
+        batch_size: {type: int, default: 32}
+        epochs: {type: int , default: 3}
+        lr: {type: float, default: 0.01}
+        nr_conv_1: {type: int, default: 32}
+        input_dir: {type: str, default: ./mlruns/0/6b3dda95d0004fb9a297088577d7eabe/artifacts}
+      command: "python train.py {batch_size} {epochs} {lr} {nr_conv_1} {input_dir}"
+    
+Wir starten erst ein neues experiment
+
+    mlflow experiments create -n conv1
+
+Mit
+
+    mlflow run . -e train -P nr_conv_1=8 --experiment-name=conv1
+    mlflow run . -e train -P nr_conv_1=16 --experiment-name=conv1
+    mlflow run . -e train -P nr_conv_1=24 --experiment-name=conv1
+    mlflow run . -e train -P nr_conv_1=32 --experiment-name=conv1
+
+können wir nun ein paar trainings unter diesem experiment laufen lassen. Um die Ergebnisse zu betrachten möchten wir uns natürlich nicht durch verschiedene Ordner clicken, stattdessen nutzen wir das mlflow ui:
+
+    mlflow ui -p 5002
+
+Öffnen wir nun unseren browser zu localhost:5002 sehen wir auf der linken zwei experiments. Ein mal Default, wo alle bisherigen 'mlflow run ...' zu finden sind, und conv1 mit den neuen experimenten.
+
+## Bestes Modell wählen
+
+Wir schauen uns die Ergebnisse an, und sehen das model X am besten ist. Die run URI beginnt nun mit /1/, da dies nicht mehr das default Experiment ist. Um das model zu Packagen nutzen wir wieder
+
+    mlflow run . -e package -P model_dir=./mlruns/1/567fa5a4b71147a494d58d1d9951bf4e/artifacts/myModel --experiment-name=conv1
+
+und schließlich
+
+    mlflow models serve -m ./model
+
+Wieder mit Paint und curl können wir mit dem Modell spielen.
+
+## MNIST Fashion
 
