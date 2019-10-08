@@ -29,10 +29,10 @@ y_train = np.load(opj(args.input_dir, 'y_train.npy'))
 x_test = np.load(opj(args.input_dir, 'x_test.npy'))
 y_test = np.load(opj(args.input_dir, 'y_test.npy'))
 
-#x_train = x_train[:6000]
-#y_train = y_train[:6000]
-#x_test = x_test[:100]
-#y_test = y_test[:100]
+x_train = x_train[:6000]
+y_train = y_train[:6000]
+x_test = x_test[:100]
+y_test = y_test[:100]
 
 # input image dimensions
 img_rows, img_cols = x_train.shape[1], x_train.shape[2]
@@ -45,18 +45,18 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 # define model
 model = Sequential()
-model.add(Conv2D(16, kernel_size=(3, 3),
+model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=input_shape))
-model.add(Conv2D(32, (3, 3),
-                 activation='relu'))
-model.add(MaxPooling2D(pool_size=(4, 4),
-                       strides=4))
-model.add(Dropout(0.25))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
+                 input_shape=input_shape,
+                 name='input-conv1'))
+model.add(Conv2D(64, (3, 3),
+                 activation='relu', name='conv2'))
+model.add(MaxPooling2D(pool_size=(2, 2), name='pool2'))
+model.add(Dropout(0.25, name='dropout1'))
+model.add(Flatten(name='flatten'))
+model.add(Dense(128, activation='relu', name='dense1'))
+model.add(Dropout(0.5, name="droput2"))
+model.add(Dense(num_classes, activation='softmax', name="dense2"))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(learning_rate=args.lr),
