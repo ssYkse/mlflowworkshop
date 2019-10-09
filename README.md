@@ -13,7 +13,7 @@ Wir richten ein neues conda envirnment ein
     conda create -n mlflowenv python=3.6
     source activate mlflowenv
 
-Zu allererst brauchen wir mlflow. Das ist einfach mittles conda oder pip heruterzuladen:
+Zu allererst brauchen wir mlflow. Das ist einfach mittles pip heruterzuladen:
 
     pip install mlflow
 
@@ -21,7 +21,7 @@ Mit einem frischen conda environment in einem leeren Ordner müssen wir für das
 
     conda env export > env.yaml
 
-Wenn wir später ein mlflow 'run' laufen, dann wird dieser in einem eigenen conda environment gelaufen. Hier legen wir fest welches environment das ist.
+Wenn wir später ein mlflow 'run' laufen lassen, wird dieser in einem eigenen conda environment gelaufen. Hier legen wir fest welches environment das ist.
 
 Des weiteren brauchen wir ein 
 
@@ -35,7 +35,11 @@ file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur besch
 
 ## Download Data
 
-Im ersten Schritt geht es darum, eine download pipeline zu erstellen. Da mnist durch Keras schon sehr einfach runterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
+Im ersten Schritt geht es darum, eine download pipeline zu erstellen. Da mnist durch Keras schon sehr einfach herunterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
+Wir müssen nur kurz den ordner data anlegen
+
+    mkdir data
+
 Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-point' zum MLproject: get_data;
 
     entry_points:
@@ -60,17 +64,15 @@ Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MN
 
     mlflow run ./ -e explore_data
 
-Wesentlich ist aber das wir die Bilder noch normalisiert werden müssen.
+Wesentlich ist, das wir die Bilder noch normalisiert werden müssen.
 
 ## Preprocess
 
 Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später möchten wir, dass das preprocessing automatisch passiert, wenn wir ein Bild an unseren ML-Server schicken. Daher verpacken wir den nächsten Schritt in mehr als nur einem Script.
 
-    mlflow run ./ -e explore_data
+    mlflow run ./ -e preprocess
 
 Hier sind in MLProject die Parameter angegeben!
-
-TODO: make function preprocess. 
 
 Desweiteren speichern wir die behandelten MNIST daten nicht einfach in ./data/... ab, sondern lassen mlflow sich darum kümmern. Der grund dafür ist, dass die daten parameter abhängig sind (mean/std.), und daher ein teil der pipeline sind. Falls wir mean/std ändern, darf das nicht vergessen werden! Zum abspeichern der behandelten Daten führen wir
 
@@ -82,15 +84,15 @@ Lasst uns nun die Ergebnisse betrachten. Wir schauen uns den Ordner mlruns/0/...
 
 ## Training and Logging
 
-In train.py wird ein Keras Modell trainiert, welches mit den command line argumenten angepasst werden kann - hier eigentlich nur die learning rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält denau die MNIST daten welche vorhin durch preprocessing erzeugt wurden.
+In train.py wird ein Keras Modell trainiert, welches mit den command line argumenten angepasst werden kann - hier eigentlich nur die learning rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält denau die MNIST daten welche vorhin durch preprocessing erzeugt wurden. Die ID vom vorherigen lauf kann idealearweise direkt aus dem Terminal ein kopiert werden.
 
-    mlflow run ./ -e train
+    mlflow run ./ -e train -P inpu_dir=./mlruns/0/...id.../artifacts
 
-Lässt trainiert das Modell. Am ende von train.py werden noch drei mlflow commands aus der Python API ausgeführt:
+trainiert das Modell. Am ende von train.py werden noch drei mlflow commands aus der Python API ausgeführt:
 
     mlflow.log_metric('loss', score[0])
     mlflow.log_metric('accuracy', score[1])
-    mlflow.keras.log_model(model, "myModel")
+    mlflow.keras.log_model(model, "myModel", conda_env="./conda.yaml")
 
 Wie vorhin, als die behandleten MNIST daten als Artifakte abgespeichert wurden, speichert wir hier Trainingsergebnisse und das Keras Modell. Zu finden sind diese date dann im mlruns Experimentordner unter .../metrics und .../artifacts/myModel.
 
@@ -98,19 +100,19 @@ Betrachten wir myModel genauer, so sehen wir das in .../myModel/data ein model.h
 
 Als letztes sehen wir das MLModel file, welches alles zusammen bringt:
 
-artifact_path: myModel
-flavors:
-  keras:
-    data: data
-    keras_module: keras
-    keras_version: 2.3.0
-  python_function:
-    data: data
-    env: conda.yaml
-    loader_module: mlflow.keras
-    python_version: 3.6.9
-run_id: e7e2b49396c94bc5a887bd201ae0eb6c
-utc_time_created: '2019-10-07 12:38:35.320207'
+    artifact_path: myModel
+    flavors:
+      keras:
+        data: data
+        keras_module: keras
+        keras_version: 2.3.0
+      python_function:
+        data: data
+        env: conda.yaml
+        loader_module: mlflow.keras
+        python_version: 3.6.9
+    run_id: e7e2b49396c94bc5a887bd201ae0eb6c
+    utc_time_created: '2019-10-07 12:38:35.320207'
 
 ## Packaging the Model
 
@@ -140,7 +142,11 @@ In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in
 
 ### Schritt 2
 
-Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen. Betrachten wir das resultierende model: das python_model.pkl ist einfach die unten inizierte Klasse gespeichert, und das MLmodel file
+Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen.
+
+    mlflow run ./ -e package -P model_dir=./mlruns/0/...id.train.../artifacts/myModel
+
+Betrachten wir das resultierende model: das python_model.pkl ist einfach die unten inizierte Klasse gespeichert, und das MLmodel file
 
     flavors:
       python_function:
@@ -160,7 +166,7 @@ Der letzte Schritt ist der einfachste. Mit
 
     mlflow models serve -m ./model
 
-setzen wir einen server auf.
+setzen wir einen server auf. Alle information sind in ./model gespeichert: Das Keras modell, die preprocessing pipeline inkl. mean und std, etc.
 
 Schicken wir ein Post request an localhost:5000/invocations mit 
 
@@ -196,6 +202,7 @@ Wir nutzen Paint um ein 28x28 großes grayscale Bild einer Zahl zu malen, und Sp
 
     python png_to_pandas ./Img-Name.png
 
+(wir brauchen dazu opencv2, pandas , mittles conda install opencv pandas)
 welches den output in example.json speichert.
 Diesen output können wir dann verschicken.
 
@@ -289,16 +296,16 @@ Schon können wir mit Paint wieder anfangen zu zeichenen!
     
     curl -d "@example.json" -h 'Content-Type: application/json-numpy-split' localhost:5000/invocations
 
-0 - T-shirt/Top
-1 - Trouser
-2 - Pullover 
-3 - Dress
-4 - Coat
-5 - Sandal
-6 - Shirt
-7 - Sneaker
+0 - T-shirt/Top  
+1 - Trouser  
+2 - Pullover   
+3 - Dress  
+4 - Coat  
+5 - Sandal  
+6 - Shirt  
+7 - Sneaker  
 8 - Bag
-9 - Ankle boot
+9 - Ankle boot  
 
 
 
