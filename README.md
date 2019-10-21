@@ -238,7 +238,7 @@ Diesen output können wir dann verschicken.
 Die MLflow Rest API erlaubt es einem nur den Request in ein paar bestimmten Formaten zu tätigen. 
 ['text/csv', 'application/json', 'application/json; format=pandas=records', 'application/json; format=pands-split', 'application/json-numpy-split'] sind alle möglichkeiten. Dies ist blöd, und wird in den Foren auch diskutiert. Ich hoffe, dass es dort bald Änderungen gibt.
 
-## Modell Optimieren
+## Modell Optimieren (5)
 
 Wir sind glücklich, da wir ein REST server haben, der uns innerhalb 2 schnellen commands ein .png auswerten kann. Jedoch sind die Ergebnisse alle falsch. Wir möchten nun ein paar Parameter ausprobieren, um ein gutes modell zu erstellen.
 
@@ -271,6 +271,13 @@ können wir nun ein paar trainings unter diesem experiment laufen lassen. Um die
     mlflow ui -p 5002
 
 Öffnen wir nun unseren browser zu localhost:5002 sehen wir auf der linken zwei experiments. Ein mal Default, wo alle bisherigen 'mlflow run ...' zu finden sind, und conv1 mit den neuen experimenten.
+
+Anstatt alle experimente per hand zu starten, können wir auch die Python API nutzen, um ein nested-run zu machen. Das bedeutet, dass wir unter einem run mehrere runs haben. Dazu benutzen wir batch_train.py, welches ähnlich wie das shell script mehrer runs startet, jedoch als __nested__ runs.
+
+	mlflow run ./ -e train_batch -p input_dir=./.... -P epochs=1 --experiment-name=conv1
+
+Soweit ich weiss, gibt es momentan keine Möglichkeit ein nested run vom CLI aus auszuführen.
+Im UI ist es nun möglich diesen run übersichtlicher anzuschauen.
 
 ## Bestes Modell wählen 
 

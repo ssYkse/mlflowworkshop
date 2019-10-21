@@ -29,6 +29,7 @@ if mlflow.active_run():
 else:
 	this_run = mlflow.start_run()
 
+
 for conv_1 in (8,16,24,32):
 	with mlflow.start_run(nested=True) as child_run:
 		p = mlflow.projects.run(
@@ -42,6 +43,7 @@ for conv_1 in (8,16,24,32):
 				"lr": args.lr,
 				"input_dir": args.input_dir
 				},
+			experiment_id=this_run.info.experiment_id,
 			use_conda=False
 		)
 	
