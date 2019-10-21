@@ -1,0 +1,17 @@
+ame: mlflow Workshop 
+
+conda_env: env.yaml
+
+entry_points:
+  get_data:
+    command: "python download.py ./data/mnist"
+  explore_data:
+    parameters:
+      in_data: {type: str, default: ./data/mnist/}
+    command: "python explore.py {in_data}"
+  preprocess:
+    parameters:
+      mean: {type: float, default: 33.318}
+      std: {type: float, default: 78.567}
+      in_data: {type: str, default: ./data/mnist/}
+    command: "python preprocess.py {in_data} {mean} {std}"
