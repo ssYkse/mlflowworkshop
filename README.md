@@ -6,6 +6,10 @@ Wenn wir das Model trainieren, möchten wir hyperparameter tuning betreiben, um 
 
 Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen - und zwar mit so wenig boilerplate code wie möglich. Oft müssen vor der Modelinference noch gewisse preprocessing steps gemacht werden, um die daten in das richtige format zu bringen. 
 
+## Quick Start (0)
+
+In dem Ordner ./0 zeige ich euch zuerst eine sehr schnelle Übersicht.
+
 ## Vorbereitung
 
 Wir richten ein neues conda envirnment ein
@@ -33,12 +37,9 @@ file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur besch
 
     conda_env: env.yaml
 
-## Download Data
+## Download Data (1)
 
 Im ersten Schritt geht es darum, eine download pipeline zu erstellen. Da mnist durch Keras schon sehr einfach herunterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
-Wir müssen nur kurz den ordner data anlegen
-
-    mkdir data
 
 Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-point' zum MLproject: get_data;
 
@@ -48,7 +49,7 @@ Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-
 
 und führen es aus:
 
-    mlflow run ./ -e get_data
+    mlflow run ./ --entry-point get_data
 
 Dies war unser erster mlflow run. Siehe
 
@@ -58,7 +59,7 @@ für mehr info. Insbesondere das './' sagt mlflow, dass in der cwd das MLProject
 
 Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat. Beim herumstöbern im Ordner sehen wir eine Ordnerstruktur mit Dateien, welche versuchen aufzuzeichen was passiert ist.
 
-## Exploration
+## Exploration (2)
 
 Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. In expore.py betrachen wir mean und std der Daten, und führen das script wieder mit mlflow aus:
 
@@ -66,7 +67,7 @@ Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MN
 
 Wesentlich ist, das wir die Bilder noch normalisiert werden müssen.
 
-## Preprocess
+## Preprocess (2)
 
 Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später möchten wir, dass das preprocessing automatisch passiert, wenn wir ein Bild an unseren ML-Server schicken. Daher verpacken wir den nächsten Schritt in mehr als nur einem Script.
 
@@ -82,7 +83,11 @@ im python script aus. Hier haben wir die Python API benutzt. Mehr dazu finden wi
 
 Lasst uns nun die Ergebnisse betrachten. Wir schauen uns den Ordner mlruns/0/...ID.../artifacts an, und sehen, dass wir dort die Daten haben. Ausserdem haben wir noch andere Informationen bezüglich diesem run, wie z.b. die parameter mean und std.
 
-## Training and Logging
+Am besten können wir natürlich wieder mit dem mlflow ui den run anschauen:
+	
+	mlflow ui
+
+## Training and Logging (3)
 
 In train.py wird ein Keras Modell trainiert, welches mit den command line argumenten angepasst werden kann - hier eigentlich nur die learning rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält denau die MNIST daten welche vorhin durch preprocessing erzeugt wurden. Die ID vom vorherigen lauf kann idealearweise direkt aus dem Terminal ein kopiert werden.
 
