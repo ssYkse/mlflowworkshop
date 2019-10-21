@@ -175,16 +175,16 @@ Alternativ könnten wir es natürlich wieder als Artefakt in einem mlrun speiche
 
 In '_ _init _ _' wird zurückverfolgt was mean und std waren (dies ist sicherlich nicht die eleganteste art, jedoch funktioniert es). Außerdem wird das keras model geladen und in self.model gespeichert.
 
-In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in die richtige dimension gebracht und mittels preprocess normalisiert. Schließlich bentuzen wir das keras model, und geben results zurück. Wie das json zu einem pd.Dataframe umgewandelt wird, und wie die Ergebnisse nach return zurückgeschickt werden, interessiert uns nicht weiter. Das übernimmt mlflows server.
+In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in die richtige Dimension gebracht und mittels preprocess normalisiert. Schließlich bentuzen wir das keras Model, und geben results zurück. Wie das json zu einem pd.Dataframe umgewandelt wird, und wie die Ergebnisse nach return zurückgeschickt werden, interessiert uns nicht weiter. Das übernimmt mlflows server.
 
 
 ### Schritt 2
 
-Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen. (siehe dazu die 'save' methode von PipeModel. Um diesen run auszuführen, nutzen wir
+Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen. (siehe dazu die 'save' methode vom PipeModel. Um diesen run auszuführen, nutzen wir
 
     mlflow run ./ -e package -P model_dir=./mlruns/0/...id.train.../artifacts/myModel
 
-Betrachten wir das resultierende model: das python_model.pkl ist einfach die unten inizierte Klasse gespeichert, und das MLmodel file
+Betrachten wir das resultierende Model: das python_model.pkl ist einfach die unten inizierte Klasse gespeichert, und das MLmodel File
 
     flavors:
       python_function:
@@ -195,7 +195,7 @@ Betrachten wir das resultierende model: das python_model.pkl ist einfach die unt
         python_version: 3.6.9
     utc_time_created: '2019-10-07 16:09:52.949232'
 
-verrät uns, wie mlflow mit diesem model umgeht. Vorhin war das python_model (python_model.pkl) durch ein module_loader (mlflow.keras) ersetzt. 
+verrät uns, wie mlflow mit diesem Model umgeht. Vorhin war das python_model (python_model.pkl) durch ein module_loader (mlflow.keras) ersetzt. 
 
 ### Schritt 3
 
@@ -203,7 +203,7 @@ Der letzte Schritt ist der einfachste. Mit
 
     mlflow models serve -m ./model
 
-setzen wir einen server auf. Alle information sind in ./model gespeichert: Das Keras modell, die preprocessing pipeline inkl. mean und std, etc.
+setzen wir einen Server auf. Alle Information sind in ./model gespeichert: Das Keras Modell, die preprocessing Pipeline inkl. mean und std, etc.
 
 Schicken wir ein Post request an localhost:5000/invocations mit 
 
@@ -219,7 +219,11 @@ als body, so erhalten wir
 als Antwort.
 
 
-### Schritt 4 (Überspringen, da Fehler)
+### Schritt 4 (Überspringen, da ich den Fehler nicht beheben konnte.)
+
+__Disclaimer:__ Der Fehler ist, dass das keras model im docker container nicht geladen werden kann. 
+    
+    raise ValueError(\"Tensor %s is not an element of this graph.\" % obj)
 
 Um nun ein Docker Image zu bauen, reicht folgender Command
 
@@ -241,19 +245,19 @@ Wir nutzen Paint um ein 28x28 großes grayscale Bild einer Zahl zu malen, und Sp
 welches den output in example.json speichert.
 Diesen output können wir dann verschicken.
 
-    curl -d "@example.json" -h 'Content-Type: application/json-numpy-split' localhost:5000/invocations
+    curl -d "@example.json" -H 'Content-Type: application/json-numpy-split' -X POST localhost:5000/invocations
 
 (hier habe ich wieder den lokalen mlflow server genommen (port 5000))
 Die MLflow Rest API erlaubt es einem nur den Request in ein paar bestimmten Formaten zu tätigen. 
-['text/csv', 'application/json', 'application/json; format=pandas=records', 'application/json; format=pands-split', 'application/json-numpy-split'] sind alle möglichkeiten. Dies ist blöd, und wird in den Foren auch diskutiert. Ich hoffe, dass es dort bald Änderungen gibt.
+['text/csv', 'application/json', 'application/json; format=pandas=records', 'application/json; format=pands-split', 'application/json-numpy-split'] sind alle Möglichkeiten. Dies ist blöd, und wird in den Foren auch diskutiert. Ich hoffe, dass es dort bald Änderungen gibt.
 
 ## Modell Optimieren (5)
 
-Wir sind glücklich, da wir ein REST server haben, der uns innerhalb 2 schnellen commands ein .png auswerten kann. Jedoch sind die Ergebnisse alle falsch. Wir möchten nun ein paar Parameter ausprobieren, um ein gutes modell zu erstellen.
+Wir sind glücklich, da wir ein REST server haben, der uns innerhalb 2 schnellen Commands ein .png auswerten kann. Jedoch sind die Ergebnisse alle falsch. Wir möchten nun ein paar Parameter ausprobieren, um ein gutes Modell zu erstellen.
 
-Dazu ändern wir train.py, und erlauben ein paar paramter.
+Dazu ändern wir train.py, und erlauben ein paar Paramter.
 
-Es sind also epochs, lr und nr_conv_1 parameter welche das endgültige Modell beinflussen. Auch das MLProject muss angepasst werden.
+Es sind nun epochs, lr und nr_conv_1 Parameter welche das endgültige Modell beinflussen. Auch das MLProject muss angepasst werden.
 
     train:
       parameters:
@@ -264,7 +268,7 @@ Es sind also epochs, lr und nr_conv_1 parameter welche das endgültige Modell be
         input_dir: {type: str, default: ./mlruns/0/6b3dda95d0004fb9a297088577d7eabe/artifacts}
       command: "python train.py {batch_size} {epochs} {lr} {nr_conv_1} {input_dir}"
     
-Wir starten erst ein neues experiment
+Wir starten erst ein neues Experiment
 
     mlflow experiments create -n conv1
 
@@ -275,22 +279,23 @@ Mit
     mlflow run . -e train -P nr_conv_1=24 --experiment-name=conv1
     mlflow run . -e train -P nr_conv_1=32 --experiment-name=conv1
 
-können wir nun ein paar trainings unter diesem experiment laufen lassen. Um die Ergebnisse zu betrachten möchten wir uns natürlich nicht durch verschiedene Ordner clicken, stattdessen nutzen wir das mlflow ui:
+können wir nun ein paar Trainings unter diesem Experiment laufen lassen. Um die Ergebnisse zu betrachten möchten wir uns natürlich nicht durch verschiedene Ordner clicken, stattdessen nutzen wir das mlflow ui:
 
     mlflow ui -p 5002
 
-Öffnen wir nun unseren browser zu localhost:5002 sehen wir auf der linken zwei experiments. Ein mal Default, wo alle bisherigen 'mlflow run ...' zu finden sind, und conv1 mit den neuen experimenten.
+Öffnen wir nun unseren Browser zu localhost:5002 sehen wir auf der Linken zwei Experiments. Ein mal Default, wo alle bisherigen 'mlflow run ...' zu finden sind, und conv1 mit den neuen Experimenten.
 
-Anstatt alle experimente per hand zu starten, können wir auch die Python API nutzen, um ein nested-run zu machen. Das bedeutet, dass wir unter einem run mehrere runs haben. Dazu benutzen wir batch_train.py, welches ähnlich wie das shell script mehrer runs startet, jedoch als __nested__ runs.
+Anstatt alle Experimente per hand zu starten, können wir auch die Python API nutzen, um ein nested-run zu machen. Das bedeutet, dass wir unter einem run mehrere runs haben. Dazu benutzen wir batch_train.py, welches ähnlich wie das shell script mehrer runs startet, jedoch als __nested__ runs.
 
 	mlflow run ./ -e train_batch -p input_dir=./.... -P epochs=1 --experiment-name=conv1
 
-Soweit ich weiss, gibt es momentan keine Möglichkeit ein nested run vom CLI aus auszuführen.
-Im UI ist es nun möglich diesen run übersichtlicher anzuschauen.
+__Disclaimer:__ Soweit ich weiss, gibt es momentan keine Möglichkeit ein nested run vom CLI aus auszuführen. Meine Methode ist in der Tat nicht sehr schön.
+
+Im UI ist es nun möglich diesen run übersichtlicher anzuschauen. Insbesondere mit dem Compare Knopf können wir gut Runs vergleichen.
 
 ## Bestes Modell wählen 
 
-Wir schauen uns die Ergebnisse an, und sehen das model X am besten ist. Die run URI beginnt nun mit /1/, da dies nicht mehr das default Experiment ist. Um das model zu Packagen nutzen wir wieder
+Wir schauen uns die Ergebnisse an, und sehen das Model X am besten ist. Die Run URI beginnt nun mit /1/, da dies nicht mehr das default Experiment ist. Um das Model zu Packagen nutzen wir wieder
 
     mlflow run . -e package -P model_dir=./mlruns/1/567fa5a4b71147a494d58d1d9951bf4e/artifacts/myModel --experiment-name=conv1
 
@@ -304,25 +309,25 @@ Wieder mit Paint und curl können wir mit dem Modell spielen.
 
 Nun haben wir vom Kunden neue Daten bekommen, oder das Prototy Modell hat den Kunden überzeugt, und das Modell soll nun auf den echten Daten arbeiten - hier MNIST Fashion.
 
-Es bietet sich wieder an, ein neues experiment zu starten
+Es bietet sich wieder an, ein neues Experiment zu starten
 
     mlflow experiments create -n fashion
 
-Der download.py code und der MLProject run müssen leicht angepasst werden. Dann kann mit 
+Der download.py Code und der MLProject entry_point get_data müssen leicht angepasst werden. Dann kann mit 
 
     mlflow run . -e get_data -P type=fashion -P outdir=data/mnist-fashion/  --experiment-name=fashion
 
-(Auf grund der Proxy-Situation musste ich leider wieder per hand mnist-fashion herunterladen).
+__Disclaimer:__(Auf grund der Proxy-Situation musste ich leider wieder per hand mnist-fashion herunterladen).
 Betracthe mnist fashion mit 
 
     mlflow run . -e explore_data -P in_data=./data/mnist-fashion/ --experiment-name=fashion
 
 Die Trainingsdaten haben mean=72.940 und std=90.021.
-Diese übernehmen wir fürs preprocessing:
+Diese übernehmen wir fürs Preprocessing:
 
     mlflow run . -e preprocess -P in_data=./data/mnist-fashion/ -P mean=72.94 -P std=90.021 --experiment-name=fashion
 
-Wieder müssten wir das modell optimieren, jedoch belassen wir es bei nur einem durchgang:
+Wieder müssten wir das Modell optimieren, jedoch belassen wir es bei nur einem Durchgang:
 
     mlflow run . -e train -P input_dir=./mlruns/2/c5757d3e88894d24b940cc42bec70613/artifacts --experiment-name=fashion
 
@@ -337,6 +342,8 @@ Schon können wir mit Paint wieder anfangen zu zeichenen!
     python png_to_pandas ./Img-Name.png
     
     curl -d "@example.json" -H 'Content-Type: application/json-numpy-split' -X POST localhost:5000/invocations
+
+Die ID's welche der Serve zurückschickt entspricht folgendem Muster:
 
 0 - T-shirt/Top  
 1 - Trouser  
