@@ -171,7 +171,7 @@ In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in
 
 ### Schritt 2
 
-Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen.
+Nun haben wir diese Klasse, welche von mlflow verstanden wird. Jeduch muss sie noch gespeichert werden. Auch hier nutzen wir mlflow, um ein pyfunc model zu erstellen. (siehe dazu die 'save' methode von PipeModel. Um diesen run auszuführen, nutzen wir
 
     mlflow run ./ -e package -P model_dir=./mlruns/0/...id.train.../artifacts/myModel
 
@@ -186,8 +186,7 @@ Betrachten wir das resultierende model: das python_model.pkl ist einfach die unt
         python_version: 3.6.9
     utc_time_created: '2019-10-07 16:09:52.949232'
 
-verrät uns, wie mlflow mit diem model umgeht. Vorhin war das python_model (python_model.pkl) durch ein module_loader (mlflow.keras) ersetzt. 
-
+verrät uns, wie mlflow mit diesem model umgeht. Vorhin war das python_model (python_model.pkl) durch ein module_loader (mlflow.keras) ersetzt. 
 
 ### Schritt 3
 
@@ -211,13 +210,11 @@ als body, so erhalten wir
 als Antwort.
 
 
-### Schritt 4 (TODO, Tensorflow in Docker gibt probleme)
+### Schritt 4 (Überspringen, da Fehler)
 
 Um nun ein Docker Image zu bauen, reicht folgender Command
 
     mlflow models build-docker -m ./model -n "my-image"
-
-(Ich musste als USER der docker gruppe angehören (https://docs.docker.com/install/linux/linux-postinstall/) und Mobile Hotspot nutzen)
 
 Mit 
 
