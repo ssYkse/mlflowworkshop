@@ -34,6 +34,7 @@ Wieder können wir im ui die Ergebnisse betrachten. Auch können wir die Ergebni
 Öffnen wir nun 0/third_serving.md. Dort wird beschrieben, wie wir das gespeicherte model als Service zur verfügung stellen können, und mittels curl/postman nutzen.
 
 Im letzten Schritt nutzen wir die mlflow cli um das model nun als Docker image zu speicher, und mit docker zu serven. Siehe dazu 0/fourth_docker.md.
+
 ## Vorbereitung
 
 Wir richten ein neues conda envirnment ein
@@ -291,7 +292,7 @@ und schließlich
 
 Wieder mit Paint und curl können wir mit dem Modell spielen.
 
-## MNIST Fashion
+## MNIST Fashion (6)
 
 Nun haben wir vom Kunden neue Daten bekommen, oder das Prototy Modell hat den Kunden überzeugt, und das Modell soll nun auf den echten Daten arbeiten - hier MNIST Fashion.
 
@@ -327,7 +328,7 @@ Schon können wir mit Paint wieder anfangen zu zeichenen!
 
     python png_to_pandas ./Img-Name.png
     
-    curl -d "@example.json" -h 'Content-Type: application/json-numpy-split' localhost:5000/invocations
+    curl -d "@example.json" -H 'Content-Type: application/json-numpy-split' -X POST localhost:5000/invocations
 
 0 - T-shirt/Top  
 1 - Trouser  
@@ -337,7 +338,7 @@ Schon können wir mit Paint wieder anfangen zu zeichenen!
 5 - Sandal  
 6 - Shirt  
 7 - Sneaker  
-8 - Bag
+8 - Bag  
 9 - Ankle boot  
 
 
