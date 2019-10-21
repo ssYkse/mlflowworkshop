@@ -1,10 +1,10 @@
 # In diesem Workshop möchte ich euch mlflow zeigen.
 
-Es geht darum ein Keras Model zu trainieren, welches MNIST Nummern klassifizieren soll. Später wird uns auffallen, das wir auch mit MNIST Fashion umgehen wollen. 
+Es geht darum ein Keras Model zu trainieren, welches MNIST Nummern klassifizieren soll. Später wird uns auffallen, dass wir auch mit MNIST Fashion umgehen wollen. 
 
-Wenn wir das Model trainieren, möchten wir hyperparameter tuning betreiben, um zu testen welche parameter gut sind. Natürlich möchten wir so übersichtlich wie möglich alle Trainings Hyperparameter aufzeichnen, sowie die trainierten Modelle und evtl. andere nützliche Sachen.
+Wenn wir das Model trainieren, möchten wir Hyperparameter tuning betreiben, um zu testen welche Parameter gut sind. Natürlich möchten wir so übersichtlich wie möglich alle trainings Hyperparameter aufzeichnen, sowie die trainierten Modelle und evtl. andere nützliche Sachen.
 
-Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen - und zwar mit so wenig boilerplate code wie möglich. Oft müssen vor der Modelinference noch gewisse preprocessing steps gemacht werden, um die daten in das richtige format zu bringen. 
+Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen - und zwar mit so wenig boilerplate code wie möglich. Oft müssen vor der Modelinference noch gewisse preprocessing steps gemacht werden, um die Daten in das richtige Format zu bringen. 
 
 ## Quick Start (0)
 
@@ -12,7 +12,7 @@ In dem Ordner ./0 zeige ich euch zuerst eine sehr schnelle Übersicht.
 
 	python first_example.py
 
-führt das erste experiment aus. Anstatt zu trainieren, zählen wir nur bis zehn. Die ergebnisse werden mittels
+führt das erste experiment aus. Anstatt zu trainieren, zählen wir nur bis zehn. Die Ergebnisse werden mittels
 	
 	mlflow.set_tag
 	mlflow.log_param
@@ -33,7 +33,7 @@ Wieder können wir im ui die Ergebnisse betrachten. Auch können wir die Ergebni
 
 Öffnen wir nun 0/third_serving.md. Dort wird beschrieben, wie wir das gespeicherte model als Service zur verfügung stellen können, und mittels curl/postman nutzen.
 
-Im letzten Schritt nutzen wir die mlflow cli um das model nun als Docker image zu speicher, und mit docker zu serven. Siehe dazu 0/fourth_docker.md.
+Im letzten Schritt nutzen wir die mlflow cli um das model als Docker Image zu speicher, und mit Docker zu serven. Siehe dazu 0/fourth_docker.md.
 
 ## Vorbereitung
 
@@ -42,21 +42,21 @@ Wir richten ein neues conda envirnment ein
     conda create -n mlflowenv python=3.6
     source activate mlflowenv
 
-Zu allererst brauchen wir mlflow. Das ist einfach mittles pip heruterzuladen:
+Zu allererst brauchen wir mlflow. Das ist einfach mittels pip herunterzuladen:
 
     pip install mlflow
 
-Mit einem frischen conda environment in einem leeren Ordner müssen wir für das Nutzen von mlflow erstmals ein paar Datein anlegen. Da ein solches environment schon in der git repo ist, überspringen wir diesen Schritt. 
+Mit einem frischen conda Environment in einem leeren Ordner müssen wir für das Nutzen von mlflow erstmals ein paar Datein anlegen. Da ein solches Environment schon in der git repo ist, überspringen wir diesen Schritt. 
 
-    conda env export > env.yaml
+    conda env export > env.yaml \\ Dies würde das conda environment anlegen, welches mlflow nutzt.
 
-Wenn wir später ein mlflow 'run' laufen lassen, wird dieser in einem eigenen conda environment gelaufen. Hier legen wir fest welches environment das ist.
+Wenn wir später ein mlflow 'run' laufen lassen, wird dieser in einem eigenen conda Environment gelaufen. Hier legen wir fest welches environment das ist.
 
 Des weiteren brauchen wir ein 
 
     MLProject
 
-file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur beschrieben welches conda environment benutzt werden soll, und wie dieses projekt heißt:
+File, welches die einzelnen Runs beschreibt. Bis  jetzt wird dort aber nur beschrieben welches conda Environment benutzt werden soll, und wie dieses projekt heißt:
 
     name: mlflow Workshop 
 
@@ -64,9 +64,9 @@ file, welches die einzelnen runs beschreibt. Bis  jetzt wird dort aber nur besch
 
 ## Download Data (1)
 
-Im ersten Schritt geht es darum, eine download pipeline zu erstellen. Da mnist durch Keras schon sehr einfach herunterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
+Im ersten Schritt geht es darum, eine download Pipeline zu erstellen. Da MNIST durch Keras schon sehr einfach herunterzuladen ist, geht dies sehr schnell. Siehe dazu download.py. 
 
-Um diesen download auszuführen nutzen wir mlflow. Dazu fügen wir einen 'entry-point' zum MLproject: get_data;
+Um diesen download auszuführen nutzen wir mlflow's CLI. Dazu fügen wir einen 'entry-point' zum MLproject: get_data;
 
     entry_points:
       get_data:
@@ -80,31 +80,31 @@ Dies war unser erster mlflow run. Siehe
 
     mlflow run --help
    
-für mehr info. Insbesondere das './' sagt mlflow, dass in der cwd das MLProject file zu betrachten ist.
+für mehr info. Insbesondere das './' sagt mlflow, dass in der CWD das MLProject File zu betrachten ist.
 
-Nun ist mnist heruntergeladen, aber noch nicht im richtigen format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für runs ausgeführt hat. Beim herumstöbern im Ordner sehen wir eine Ordnerstruktur mit Dateien, welche versuchen aufzuzeichen was passiert ist.
+Nun ist MNIST heruntergeladen, aber noch nicht im richtigen Format. Außerdem hat sich ein neuer Ordner 'mlruns' erstellt. Hier wird aufgezeichnet, was mlflow für Runs ausgeführt hat. Beim Herumstöbern im Ordner sehen wir eine Ordnerstruktur mit Dateien, welche versuchen aufzuzeichnen was passiert ist.
 
 ## Exploration (2)
 
-Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. In expore.py betrachen wir mean und std der Daten, und führen das script wieder mit mlflow aus:
+Nach dem download der Daten müssen wir gucken, was wir überhaupt haben. Der MNIST Datensatz ist sehr bekannt, daher halten wir diesen Teil kurz. In expore.py betrachten wir __mean__ und __std__ der Daten, und führen das Script wieder mit mlflow aus:
 
     mlflow run ./ -e explore_data
 
-Wesentlich ist, das wir die Bilder noch normalisiert werden müssen.
+Wesentlich ist, das wir die Bilder noch normalisieren müssen.
 
 ## Preprocess (2)
 
-Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später möchten wir, dass das preprocessing automatisch passiert, wenn wir ein Bild an unseren ML-Server schicken. Daher verpacken wir den nächsten Schritt in mehr als nur einem Script.
+Das, was wir im vorherigen Schritt gelernt haben, wenden wir nun an. Später möchten wir, dass das werden Preprocessing automatisch passiert, wenn wir ein Bild an unseren ML-Server schicken. Daher verpacken wir den nächsten Schritt in mehr als nur einem Script.
 
     mlflow run ./ -e preprocess
 
 Hier sind in MLProject die Parameter angegeben!
 
-Desweiteren speichern wir die behandelten MNIST daten nicht einfach in ./data/... ab, sondern lassen mlflow sich darum kümmern. Der grund dafür ist, dass die daten parameter abhängig sind (mean/std.), und daher ein teil der pipeline sind. Falls wir mean/std ändern, darf das nicht vergessen werden! Zum abspeichern der behandelten Daten führen wir
+Desweiteren speichern wir die behandelten MNIST daten nicht einfach in ./data/... ab, sondern lassen mlflow sich darum kümmern. Der grund dafür ist, dass die Daten parameterabhängig sind (mean/std.), und daher ein teil der Pipeline sind. Falls wir mean/std ändern, darf das nicht vergessen werden! Zum abspeichern der behandelten Daten führen wir
 
     mlflow.log_artifacts(tempdir)
 
-im python script aus. Hier haben wir die Python API benutzt. Mehr dazu finden wir auf https://mlflow.org/docs/latest/python_api/index.html.
+im python Script aus. Hier haben wir die Python API benutzt. Mehr dazu finden wir auf https://mlflow.org/docs/latest/python_api/index.html.
 
 Lasst uns nun die Ergebnisse betrachten. Wir schauen uns den Ordner mlruns/0/...ID.../artifacts an, und sehen, dass wir dort die Daten haben. Ausserdem haben wir noch andere Informationen bezüglich diesem run, wie z.b. die parameter mean und std.
 
@@ -112,21 +112,26 @@ Am besten können wir natürlich wieder mit dem mlflow ui den run anschauen:
 	
 	mlflow ui
 
+__Disclaimer:__ Es gibt auf github eine diskussion, ob ein solches Vorgehen Sinnvoll ist, und was es für alternativen gibt.
+
 ## Training and Logging (3)
 
-In train.py wird ein Keras Modell trainiert, welches mit den command line argumenten angepasst werden kann - hier eigentlich nur die learning rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält denau die MNIST daten welche vorhin durch preprocessing erzeugt wurden. Die ID vom vorherigen lauf kann idealearweise direkt aus dem Terminal ein kopiert werden.
+In train.py wird ein Keras Modell trainiert, welches mit den Command Line Argumenten angepasst werden kann - hier eigentlich nur die Learning Rate (lr) und die Anzahl der Epochen (epochs). Der Datenordner (input_dir) ist jedoch auch wichtig - er enthält genau die MNIST Daten, welche vorhin durch das Preprocessing erzeugt wurden. Die ID vom vorherigen lauf kann idealerweise direkt aus dem Terminal einkopiert werden.
 
     mlflow run ./ -e train -P inpu_dir=./mlruns/0/...id.../artifacts
 
-trainiert das Modell. Am ende von train.py werden noch drei mlflow commands aus der Python API ausgeführt:
+trainiert das Modell. Am Ende von train.py werden noch drei mlflow Commands aus der Python API ausgeführt:
 
     mlflow.log_metric('loss', score[0])
     mlflow.log_metric('accuracy', score[1])
     mlflow.keras.log_model(model, "myModel", conda_env="./conda.yaml")
 
-Wie vorhin, als die behandleten MNIST daten als Artifakte abgespeichert wurden, speichert wir hier Trainingsergebnisse und das Keras Modell. Zu finden sind diese date dann im mlruns Experimentordner unter .../metrics und .../artifacts/myModel.
 
-Betrachten wir myModel genauer, so sehen wir das in .../myModel/data ein model.h5 gespeichert ist (das Keras Modell) und in .../myModel/conda.yaml steht, was für ein Conda environment gebraucht wird um dieses Model laufen zu lassen.
+__Disclaimer:__ Man muss kein conda_env spezifizieren, mlflow kann selber eins generieren. Jedoch gab es bei mir ein bug, so dass ich eins spezifiziert habe. Vieleicht liegt das daran, dass ich etwas falsch gemacht habe, vieleicht aber auch an mlflow.
+
+Wie vorhin, als die behandleten MNIST daten als Artefakte abgespeichert wurden, speichern wir hier Trainingsergebnisse und das Keras Modell. Zu finden sind diese Date dann im ./mlruns Experimentordner unter .../metrics und .../artifacts/myModel.
+
+Betrachten wir myModel genauer, so sehen wir das in .../myModel/data ein model.h5 gespeichert ist (das Keras Modell) und in .../myModel/conda.yaml steht, was für ein Conda Environment gebraucht wird um dieses Model laufen zu lassen.
 
 Als letztes sehen wir das MLModel file, welches alles zusammen bringt:
 
@@ -146,26 +151,29 @@ Als letztes sehen wir das MLModel file, welches alles zusammen bringt:
 
 ## Packaging the Model (4)
 
-Es gibt die möglichkeit das keras modell, so wie wir es gespeichert haben in einem Server zur Verfügung zu stellen. Das Problem dabei ist leider, das mlflow server nur pandas dataframs welche in einem speziellen json format gespeichert sind entgegen nehmen.
+Es gibt die Möglichkeit das keras Modell, so wie wir es gespeichert haben in einem Server zur Verfügung zu stellen. Das Problem dabei ist leider, das mlflow server nur Pandas Dataframes welche in einem speziellen json Format gespeichert sind entgegen nehmen kann.
 Wenn z.b. img ein 2D Numpy array ist, dann kann man dies durch
 
     df = pd.DataFrame(img)
 
     df.to_json('./example.json', orient='split')
 
-gelingen.
-Bei 3D arrays ist dies leider schwieriger. Und unser Keras modell erwartet sogar 4D input tensoren (batch_size,28,28,1)!
-Daher müssen wir selber uns darum kümmern, dass das Modell richtig gefüttert wird. Vorhin haben wir mlflow.keras.log_model genutzt um das model zu speichern. Nun nutzen wir mlflow.pyfunc. Was ist PyFunc? Mlflow erlaubt es einem beliebige classen zu speichern, welche ein paar methoden haben (z.b. predict, ). 
+in das richtige Format bringen.
+__Disclaimer:__ Dies ist blöd, denn es zwingt uns einen Data-Preprocessing Schritt aus dem mlflow model zu nehmen, und entweder eine eigene Middleware zu schreiben, oder (schlimmer noch) im Forntend das Preprocessing durchzuführen. 
 
-Später ist mlflow dann dazu in der Lage, diese Modelle zu laden und als server anzubieten - aber man ist nicht gezwungen mlflow server zu nutzen, man kann auch seine eigenen schreiben.
+Bei 3D arrays ist es leider schwieriger den tensor in ein pandas df zu verwandeln. Und unser Keras modell erwartet sogar 4D input Tensoren (batch_size,28,28,1)!
+Daher müssen wir uns selber darum kümmern, dass das Modell richtig gefüttert wird. Vorhin haben wir mlflow.keras.log_model genutzt um das Model zu speichern. Nun nutzen wir mlflow.pyfunc. Was ist PyFunc? Mlflow erlaubt es einem beliebige Klassen zu speichern, welche ein paar methoden haben (z.b. predict, ), i.e. Inheritance.
+
+Später ist mlflow dann dazu in der Lage, diese Modelle zu laden und als Server anzubieten - aber man ist nicht gezwungen mlflow Server zu nutzen - man kann auch seine eigenen schreiben.
 
 
 ### Schritt 1
 
-Betrachten wir package_model.py. Unten sehen wir, dass wir ein MyPipeModel instanzieren und auch speichern, undzwar in dem Verszeichnis ./model.
-Alternativ könnten wir es natürlich wieder als artefakt in einem mlrun speichern. Da es aber das ende des prozesses ist, habe ich mich dagegen entschlossen.
+Betrachten wir package_model.py. Unten sehen wir, dass wir ein MyPipeModel instanzieren und auch speichern, undzwar in dem Verszeichnis ./model. __Disclaimer:__ Hier wird in der Zukunft die Model Registry sinnvoll sein!
 
-In '__init__' wird zurückverfolgt was mean und std waren (dies ist sicherlich nicht die eleganteste art, jedoch funktioniert es). Außerdem wird das keras model geladen und in self.model gespeichert.
+Alternativ könnten wir es natürlich wieder als Artefakt in einem mlrun speichern. Da es aber das Ende des Prozesses ist, habe ich mich dagegen entschlossen.
+
+In '_ _init _ _' wird zurückverfolgt was mean und std waren (dies ist sicherlich nicht die eleganteste art, jedoch funktioniert es). Außerdem wird das keras model geladen und in self.model gespeichert.
 
 In predict wird dann das pandas-json zu numpy umgewandelt, mittels .reshape() in die richtige dimension gebracht und mittels preprocess normalisiert. Schließlich bentuzen wir das keras model, und geben results zurück. Wie das json zu einem pd.Dataframe umgewandelt wird, und wie die Ergebnisse nach return zurückgeschickt werden, interessiert uns nicht weiter. Das übernimmt mlflows server.
 
