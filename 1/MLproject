@@ -1,0 +1,7 @@
+name: mlflow Workshop 
+
+conda_env: env.yaml
+
+entry_points:
+  get_data:
+    command: "python download.py ./data/mnist/"
