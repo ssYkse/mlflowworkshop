@@ -10,6 +10,30 @@ Nachdem wir uns für ein Model entschieden haben, möchten wir dieses deployen -
 
 In dem Ordner ./0 zeige ich euch zuerst eine sehr schnelle Übersicht.
 
+	python first_example.py
+
+führt das erste experiment aus. Anstatt zu trainieren, zählen wir nur bis zehn. Die ergebnisse werden mittels
+	
+	mlflow.set_tag
+	mlflow.log_param
+	mlflow.log_metric
+	mlflow.log_artifacts
+
+gespeichert. Angucken können wir die Ergebnisse mit
+
+	mlflow ui
+
+und gehen dann im Browser auf localhost:5000.
+
+In dem zweiten Experiment trainieren wir tatsächlich ein sklearn model:
+
+	python second_logging.py
+
+Wieder können wir im ui die Ergebnisse betrachten. Auch können wir die Ergebnisse im Ordner ./mlruns genauer angucken.
+
+Öffnen wir nun 0/third_serving.md. Dort wird beschrieben, wie wir das gespeicherte model als Service zur verfügung stellen können, und mittels curl/postman nutzen.
+
+Im letzten Schritt nutzen wir die mlflow cli um das model nun als Docker image zu speicher, und mit docker zu serven. Siehe dazu 0/fourth_docker.md.
 ## Vorbereitung
 
 Wir richten ein neues conda envirnment ein
@@ -119,7 +143,7 @@ Als letztes sehen wir das MLModel file, welches alles zusammen bringt:
     run_id: e7e2b49396c94bc5a887bd201ae0eb6c
     utc_time_created: '2019-10-07 12:38:35.320207'
 
-## Packaging the Model
+## Packaging the Model (4)
 
 Es gibt die möglichkeit das keras modell, so wie wir es gespeichert haben in einem Server zur Verfügung zu stellen. Das Problem dabei ist leider, das mlflow server nur pandas dataframs welche in einem speziellen json format gespeichert sind entgegen nehmen.
 Wenn z.b. img ein 2D Numpy array ist, dann kann man dies durch
