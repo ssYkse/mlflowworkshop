@@ -1,0 +1,12 @@
+md5: 9efa05f6032e1cc8cce23913c5ad3c48
+cmd: pwd && mlflow run . -e get_data
+wdir: ../..
+deps:
+- md5: 768850936220a2ce89a51994e954a845
+  path: MLproject
+outs:
+- md5: 0e2e30a88ab62ecb437f3b382285342f.dir
+  path: data/mnist
+  cache: true
+  metric: false
+  persist: false
