@@ -18,7 +18,7 @@ entry_points:
   train:
     parameters:
       batch_size: {type: int, default: 32}
-      epochs: {type: int , default: 3}
+      epochs: {type: int , default: 1}
       lr: {type: float, default: 0.01}
       nr_conv_1: {type: int, default: 32}
       input_dir: {type: str, default: ./mlruns/0/6b3dda95d0004fb9a297088577d7eabe/artifacts}

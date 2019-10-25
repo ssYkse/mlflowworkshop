@@ -8,7 +8,7 @@ learning_rate = 10
 mlflow.log_param("LR", learning_rate)
 for i in range(10):
 	print("Amazing Training ongoing!")
-	mlflow.log_metric('loss', i)
+	mlflow.log_metric('loss', i+1/(i+1))
 	mlflow.log_metric('amazingnes', 1/(i+1))
 
 
