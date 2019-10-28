@@ -6,6 +6,8 @@ import mlflow
 parser = argparse.ArgumentParser(description='Download either MNIST numbers or fashion')
 parser.add_argument('rawdir', type=str, 
                     help='Directory where the raw data is found')
+parser.add_argument('paramsdir', type=str,
+		help='Directory where the parameters are saved')
 args = parser.parse_args()
 
 # Load Data
@@ -26,5 +28,12 @@ print('Test', x_test.min(), x_test.max(), x_test.mean(), x_test.std())
 mlflow.log_metric("mean", x_train.mean())
 mlflow.log_metric("std", x_train.std())
 
+import yaml
+with open(opj(args.paramsdir, 'auto', 'explore.yaml'), 'w', encoding='utf8') as f:
+	data = {
+		'mean': str(x_train.mean()),
+		'std': str(x_train.std())
+	}
+	yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
 
 

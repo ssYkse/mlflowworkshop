@@ -15,21 +15,26 @@ dvc run \
 	-f ./pipelines/mnist/explore.dvc \
 	-d src/explore.py \
 	-d data/mnist-raw \
+	-o params/auto/explore.yaml \
 	--no-exec \
 	'mlflow run . -e explore_data \
-			-P in_data=./data/mnist-raw'
+			-P in_data=./data/mnist-raw \
+			-P paramsdir=params'
 
 ### Preprocess Pipe ###
 dvc run \
 	-f ./pipelines/mnist/preprocess.dvc \
 	-d src/preprocess.py \
 	-d data/mnist-raw \
+	-d params/auto/explore.yaml \
 	-o data/mnist-preprocessed \
 	--no-exec \
-	'mlflow run . -e preprocess \
+	'mean=$(cat params/auto/explore.yaml | grep "mean" | sed "s/[^0-9\.]//g") && \
+	std=$(cat params/auto/explore.yaml | grep "std" | sed "s/[^0-9\.]//g") && \
+	mlflow run . -e preprocess \
 			-P in_data=data/mnist-raw \
-			-P mean=33.318 \
-			-P std=78.567 \
+			-P mean=$mean \
+			-P std=$std \
 			-P outdir=data/mnist-preprocessed'
 
 

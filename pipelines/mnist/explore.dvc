@@ -1,8 +1,15 @@
-cmd: "mlflow run . -e explore_data \\\n\t\t\t-P in_data=./data/mnist-raw"
+cmd: "mlflow run . -e explore_data \\\n\t\t\t-P in_data=./data/mnist-raw \\\n\t\t\t\
+  -P paramsdir=params"
 wdir: ../..
 deps:
-- path: src/explore.py
-  md5: 669cef4a572b9e421a153b501c71c75e
-- path: data/mnist-raw
-  md5: 0e2e30a88ab62ecb437f3b382285342f.dir
-md5: 3a831f5271a984ef90ecabcd01a85832
+- md5: 24b1f3a15a00bdeb6bfc6f8037a0e330
+  path: src/explore.py
+- md5: 23b0000338669d2c61217dbd94633aa0.dir
+  path: data/mnist-raw
+outs:
+- path: params/auto/explore.yaml
+  cache: true
+  metric: false
+  persist: false
+  md5: d59ea7abb957ceadaf8423affb00954c
+md5: 5de6a83be09df8944937fab99dd65618

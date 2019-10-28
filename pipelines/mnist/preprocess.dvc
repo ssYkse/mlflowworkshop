@@ -1,15 +1,19 @@
-cmd: "mlflow run . -e preprocess \\\n\t\t\t-P in_data=data/mnist-raw \\\n\t\t\t-P\
-  \ mean=33.318 \\\n\t\t\t-P std=78.567 \\\n\t\t\t-P outdir=data/mnist-preprocessed"
+cmd: "mean=$(cat params/auto/explore.yaml | grep \"mean\" | sed \"s/[^0-9\\.]//g\"\
+  ) && \\\n\tstd=$(cat params/auto/explore.yaml | grep \"std\" | sed \"s/[^0-9\\.]//g\"\
+  ) && \\\n\tmlflow run . -e preprocess \\\n\t\t\t-P in_data=data/mnist-raw \\\n\t\
+  \t\t-P mean=$mean \\\n\t\t\t-P std=$std \\\n\t\t\t-P outdir=data/mnist-preprocessed"
 wdir: ../..
 deps:
-- md5: a5a5243de2e4601813014cd4836f3ca7
-  path: src/preprocess.py
-- md5: 23b0000338669d2c61217dbd94633aa0.dir
-  path: data/mnist-raw
+- path: src/preprocess.py
+  md5: a5a5243de2e4601813014cd4836f3ca7
+- path: data/mnist-raw
+  md5: 23b0000338669d2c61217dbd94633aa0.dir
+- path: params/auto/explore.yaml
+  md5: d59ea7abb957ceadaf8423affb00954c
 outs:
 - path: data/mnist-preprocessed
   cache: true
   metric: false
   persist: false
-  md5: d75a94b2c783793cd72e9c76c46806a0.dir
-md5: 007d12e22cd9a05b4458438b9698390f
+  md5: 2b3e3dddbcf11e0c4ca0f3355c910ace.dir
+md5: f3000a49ae4a3a834aa880165655809b

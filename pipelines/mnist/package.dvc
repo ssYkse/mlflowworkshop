@@ -2,14 +2,14 @@ cmd: "mlflow run . -e package \\\n\t\t\t-P model_dir_in=models/raw \\\n\t\t\t-P 
   \ \\\n\t\t\t-P mean=33.318 \\\n\t\t\t-P std=78.567"
 wdir: ../..
 deps:
-- path: src/package_model.py
-  md5: 6f9df26d3c5700af4cab455b0a807edc
-- path: models/raw
-  md5: ef6fe23c1039cd6d68657079d38083dd.dir
+- md5: 6f9df26d3c5700af4cab455b0a807edc
+  path: src/package_model.py
+- md5: d751713988987e9331980363e24189ce.dir
+  path: models/raw
 outs:
 - path: models/packaged
   cache: true
   metric: false
   persist: false
   md5: 45a59fe334b2dcc64543d7c4193727e2.dir
-md5: 0e3c2646118e2a1fc7618a13611687d4
+md5: 86e85943ae1ba14bfafd384baeaa4ec9
