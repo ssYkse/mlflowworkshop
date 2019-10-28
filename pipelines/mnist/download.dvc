@@ -1,12 +1,12 @@
 cmd: "mlflow run . -e get_data \\\n\t\t\t-P type=fashion \\\n\t\t\t-P outdir=./data/mnist-raw"
 wdir: ../..
 deps:
-- md5: e127198d5782c1953ee789dd1115cfad
+- md5: f9793c1d798b3dff3a9f02c61f7ab593
   path: src/download.py
 outs:
 - path: data/mnist-raw
   cache: true
   metric: false
   persist: false
-  md5: d751713988987e9331980363e24189ce.dir
-md5: dcab5bb41ad3d340878237657d356e33
+  md5: 23b0000338669d2c61217dbd94633aa0.dir
+md5: dc79fb235da0f3d9239d36a0ad6b8c14

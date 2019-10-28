@@ -1,0 +1,7 @@
+cmd: mlflow models build-docker -m ./models/packaged -n mnist_model
+wdir: ../..
+deps:
+- md5: 45a59fe334b2dcc64543d7c4193727e2.dir
+  path: models/packaged
+always_changed: true
+md5: 2e1da037576408cf7ae6cee436b5bbb7

@@ -1,0 +1,8 @@
+cmd: "mlflow run . -e explore_data \\\n\t\t\t-P in_data=./data/mnist-raw"
+wdir: ../..
+deps:
+- path: src/explore.py
+  md5: 669cef4a572b9e421a153b501c71c75e
+- path: data/mnist-raw
+  md5: 0e2e30a88ab62ecb437f3b382285342f.dir
+md5: 3a831f5271a984ef90ecabcd01a85832

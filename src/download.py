@@ -23,9 +23,9 @@ if args.type == 'number':
 elif args.type == 'fashion':
     print("DOWNLOADING FASHION")
     #((trainX, trainY), (testX, testY)) = fashion_mnist.load_data()
-    import mnist_reader
-    x_train, y_train = mnist_reader.load_mnist('data/raw/', kind='train')
-    x_test , y_test  = mnist_reader.load_mnist('data/raw/', kind='t10k')
+    import util.mnist_reader as mr
+    x_train, y_train = mr.load_mnist('data/raw/', kind='train')
+    x_test , y_test  = mr.load_mnist('data/raw/', kind='t10k')
     x_train = x_train.reshape(x_train.shape[0], 28,28)
     x_test  = x_test.reshape(x_test.shape[0], 28,28)
 else:

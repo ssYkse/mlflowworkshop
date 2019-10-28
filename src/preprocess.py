@@ -4,8 +4,6 @@ import os
 import tempfile
 import mlflow
 
-
-
 def preprocess(x_train, mean, std):
     #Normalize data
     x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], x_train.shape[2], 1).astype('float32')
@@ -14,8 +12,10 @@ def preprocess(x_train, mean, std):
 
     return x_train
 
+print("Not Main")
 
 if __name__ == '__main__':
+    print("Main")
     import argparse
     parser = argparse.ArgumentParser(description='Preprocess all data.')
     parser.add_argument('rawdir', type=str, 
@@ -39,6 +39,8 @@ if __name__ == '__main__':
     x_test = preprocess(x_test , args.mean, args.std)
 
     #Save data
+    print(args.outdir)
+
     if not os.path.isdir(args.outdir):
     	os.makedirs(args.outdir)
 

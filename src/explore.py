@@ -1,6 +1,7 @@
 import numpy as np
 from os.path import join as opj
 import argparse
+import mlflow
 
 parser = argparse.ArgumentParser(description='Download either MNIST numbers or fashion')
 parser.add_argument('rawdir', type=str, 
@@ -22,6 +23,8 @@ print("y_test: ", y_test.shape)
 print('Train', x_train.min(), x_train.max(), x_train.mean(), x_train.std())
 print('Test', x_test.min(), x_test.max(), x_test.mean(), x_test.std())
 
+mlflow.log_metric("mean", x_train.mean())
+mlflow.log_metric("std", x_train.std())
 
 
 

@@ -1,16 +1,16 @@
-cmd: "mlflow run . -e train \\\n\t\t      -P batch_size =32 \\\n\t\t      -P epochs=3\
+cmd: "mlflow run . -e train \\\n\t\t      -P batch_size=32 \\\n\t\t      -P epochs=3\
   \ \\\n\t\t      -P lr=0.01 \\\n\t\t      -P nr_conv_1=8 \\\n\t\t      -P input_dir=data/mnist-preprocessed\
   \ \\\n\t\t      -P outdir=models/raw"
 wdir: ../..
 deps:
 - path: src/train.py
-  md5: 5b0086f384228a3131d66414fbdc9fa0
+  md5: 24d17f24874efbf5507dfe44ea4fae00
 - path: data/mnist-preprocessed
-  md5: d75a94b2c783793cd72e9c76c46806a0.dir
+  md5: badbc50cabc1587e9411bb399dc43a67.dir
 outs:
 - path: models/raw
   cache: true
   metric: false
   persist: false
-  md5: d751713988987e9331980363e24189ce.dir
-md5: 2031368b4bcf1a59b4d5fee9c55da755
+  md5: ef6fe23c1039cd6d68657079d38083dd.dir
+md5: 54f048492bc95a3ba108975dd096b181

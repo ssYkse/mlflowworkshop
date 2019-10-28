@@ -1,0 +1,7 @@
+cmd: mlflow models serve -p 5001 -m ./models/packaged
+wdir: ../..
+deps:
+- md5: 45a59fe334b2dcc64543d7c4193727e2.dir
+  path: models/packaged
+always_changed: true
+md5: a4aa250480625c47114256c3cb6b30f7

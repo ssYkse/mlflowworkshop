@@ -6,29 +6,37 @@ entry_points:
   get_data:
     parameters:
       type: str
-      outdir: path
+      outdir: str
     command: "python src/download.py {type} {outdir}"
   explore_data:
     parameters:
       in_data: str
-    command: "python explore.py {in_data}"
+    command: "python src/explore.py {in_data}"
   preprocess:
     parameters:
       mean: float
       std: float
-      in_data: path
-      outdir: path
-    command: "python preprocess.py {in_data} {mean} {std} {outdir}"
+      in_data: str 
+      outdir: str 
+    command: "python src/preprocess.py {in_data} {mean} {std} {outdir}"
   train:
     parameters:
       batch_size: int
       epochs: int
       lr: float
       nr_conv_1: int
-      input_dir: path
-      outdir: path
-    command: "python train.py {batch_size} {epochs} {lr} {nr_conv_1} {input_dir}"
+      input_dir: str 
+      outdir: str 
+    command: "python src/train.py {batch_size} {epochs} {lr} {nr_conv_1} {input_dir} {outdir}"
   package:
     parameters:
-      model_dir: {type: str, default: ./mlruns/0/36829de7c2a74e05868bd0d414ae6d9f/artifacts/myModel}
-    command: "rm -rf ./model && python package_model.py {model_dir}"
+      model_dir_in: str
+      model_dir_out: str
+      mean: float
+      std: float
+    command: "python src/package_model.py {model_dir_in} {model_dir_out} {mean} {std}"
+
+
+
+
+
