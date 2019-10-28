@@ -1,14 +1,16 @@
-md5: 19d90b6d3ab6ad6420096d389ca5a5a3
-cmd: mlflow run . -e preprocess
+cmd: "mlflow run . -e preprocess  \t\t\t\t\\\n\t\t\t-P mean=33.318 \t\t\t\t\\ \n\t\
+  \t\t-P std=78.567  \t\t\t\t\\\n\t\t\t-P in_data=./data/mnist-raw \t\t\\\n\t\t\t\
+  -P outdir=./data/mnist-preprocessed"
 wdir: ../..
 deps:
-- md5: af4d968e8a479bed01ce17349dd47af8
-  path: MLproject
-- md5: 0e2e30a88ab62ecb437f3b382285342f.dir
-  path: data/mnist
+- md5: 1bf9b4ee9e0f356d73af18064273694f
+  path: src/preprocess.py
+- md5: d751713988987e9331980363e24189ce.dir
+  path: data/mnist-raw
 outs:
-- md5: badbc50cabc1587e9411bb399dc43a67.dir
-  path: data/mnist-preprocessed
+- path: data/mnist-preprocessed
   cache: true
   metric: false
   persist: false
+  md5: d75a94b2c783793cd72e9c76c46806a0.dir
+md5: 6f8e32c2df0d8979c0481e0cbaf57280

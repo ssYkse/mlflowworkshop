@@ -23,6 +23,8 @@ parser.add_argument('nr_conv_1', type=int,
                     help='Nr. of convolutions in the first conv layer')
 parser.add_argument('input_dir', type=str,
                     help='artifact dir of a preprocessing run.')
+parser.add_argument('outdir', type=str,
+                    help='place where to save the model.')
 args = parser.parse_args()
 
 # load images
@@ -79,3 +81,4 @@ mlflow.set_tag('input_data', args.input_dir)
 mlflow.log_metric('loss', score[0])
 mlflow.log_metric('accuracy', score[1])
 mlflow.keras.log_model(model, "myModel", conda_env="./conda.yaml")
+mlflow.keras.save_model(model, "myModel", conda_env="./conda.yaml")
