@@ -1,12 +1,14 @@
-md5: 665c91c1a5b64ddb1ad1e60543d98a54
-cmd: pwd && mlflow run . -e get_data
+md5: 19d90b6d3ab6ad6420096d389ca5a5a3
+cmd: mlflow run . -e preprocess
 wdir: ../..
 deps:
 - md5: af4d968e8a479bed01ce17349dd47af8
   path: MLproject
-outs:
 - md5: 0e2e30a88ab62ecb437f3b382285342f.dir
   path: data/mnist
+outs:
+- md5: badbc50cabc1587e9411bb399dc43a67.dir
+  path: data/mnist-preprocessed
   cache: true
   metric: false
   persist: false

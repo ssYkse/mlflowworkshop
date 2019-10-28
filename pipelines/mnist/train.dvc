@@ -1,0 +1,8 @@
+md5: c0ff246af7fcd9212adc349f80f83460
+cmd: mlflow run . -e train -P input_dir=data/mnist-preprocessed/
+wdir: ../..
+deps:
+- md5: af4d968e8a479bed01ce17349dd47af8
+  path: MLproject
+- md5: badbc50cabc1587e9411bb399dc43a67.dir
+  path: data/mnist-preprocessed

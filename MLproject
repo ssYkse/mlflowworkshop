@@ -17,7 +17,8 @@ entry_points:
       mean: {type: float, default: 33.318}
       std: {type: float, default: 78.567}
       in_data: {type: str, default: ./data/mnist/}
-    command: "python preprocess.py {in_data} {mean} {std}"
+      outdir: {type: str, default: ./data/mnist-preprocessed/}
+    command: "python preprocess.py {in_data} {mean} {std} {outdir}"
   train:
     parameters:
       batch_size: {type: int, default: 32}

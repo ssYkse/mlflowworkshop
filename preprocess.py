@@ -24,8 +24,9 @@ if __name__ == '__main__':
                         help='Mean for normalization.')
     parser.add_argument('std', type=float, 
                         help='Std for normalization.')
+    parser.add_argument('outdir', type=str, 
+                        help='Directory where the raw preprocessed data is to be stored.')
     args = parser.parse_args()
-    tempdir = tempfile.mkdtemp()
 
     #Open data
     x_train = np.load(opj(args.rawdir, 'x_train.npy'))
@@ -38,14 +39,15 @@ if __name__ == '__main__':
     x_test = preprocess(x_test , args.mean, args.std)
 
     #Save data
-    np.save(opj(tempdir, 'x_train'), x_train)
-    np.save(opj(tempdir, 'y_train'), y_train)
-    np.save(opj(tempdir, 'x_test'), x_test)
-    np.save(opj(tempdir, 'y_test'), y_test)
+    if not os.path.isdir(args.outdir):
+    	os.makedirs(args.outdir)
 
-    #Log to MLflow 
-    mlflow.log_artifacts(tempdir)
-    #TODO: Maybe remove below?
+    np.save(opj(args.outdir, 'x_train'), x_train)
+    np.save(opj(args.outdir, 'y_train'), y_train)
+    np.save(opj(args.outdir, 'x_test'), x_test)
+    np.save(opj(args.outdir, 'y_test'), y_test)
+
+
     mlflow.set_tag('mean', args.mean)
     mlflow.set_tag('std', args.std)
 

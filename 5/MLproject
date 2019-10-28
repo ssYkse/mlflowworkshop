@@ -1,4 +1,4 @@
-ame: mlflow Workshop 
+name: mlflow Workshop 
 
 conda_env: env.yaml
 
