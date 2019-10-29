@@ -4,12 +4,12 @@ wdir: ../..
 deps:
 - md5: 24b1f3a15a00bdeb6bfc6f8037a0e330
   path: src/explore.py
-- md5: 23b0000338669d2c61217dbd94633aa0.dir
+- md5: 0e2e30a88ab62ecb437f3b382285342f.dir
   path: data/mnist-raw
 outs:
 - path: params/auto/explore.yaml
   cache: true
   metric: false
   persist: false
-  md5: d59ea7abb957ceadaf8423affb00954c
-md5: 5de6a83be09df8944937fab99dd65618
+  md5: bd6bc06b263012508b952d0a12f43c40
+md5: 829d38bb8d06625dcdc37a1414387975

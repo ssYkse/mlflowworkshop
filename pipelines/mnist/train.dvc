@@ -3,14 +3,14 @@ cmd: "mlflow run . -e train \\\n\t\t      -P batch_size=32 \\\n\t\t      -P epoc
   \ \\\n\t\t      -P outdir=models/raw"
 wdir: ../..
 deps:
-- path: src/train.py
-  md5: 24d17f24874efbf5507dfe44ea4fae00
-- path: data/mnist-preprocessed
-  md5: d751713988987e9331980363e24189ce.dir
+- md5: 24d17f24874efbf5507dfe44ea4fae00
+  path: src/train.py
+- md5: b496603ad867dfcd7df686fd44a105cb.dir
+  path: data/mnist-preprocessed
 outs:
 - path: models/raw
   cache: true
   metric: false
   persist: false
-  md5: d751713988987e9331980363e24189ce.dir
-md5: 584a01317436136ebee9be1ee675a763
+  md5: 7fd21799c25df878b64cd409f0272a72.dir
+md5: c81c50b6f7937eba919c6b1d90126a95

@@ -7,13 +7,13 @@ deps:
 - path: src/preprocess.py
   md5: a5a5243de2e4601813014cd4836f3ca7
 - path: data/mnist-raw
-  md5: 23b0000338669d2c61217dbd94633aa0.dir
+  md5: 0e2e30a88ab62ecb437f3b382285342f.dir
 - path: params/auto/explore.yaml
-  md5: d59ea7abb957ceadaf8423affb00954c
+  md5: bd6bc06b263012508b952d0a12f43c40
 outs:
 - path: data/mnist-preprocessed
   cache: true
   metric: false
   persist: false
-  md5: 2b3e3dddbcf11e0c4ca0f3355c910ace.dir
-md5: f3000a49ae4a3a834aa880165655809b
+  md5: b496603ad867dfcd7df686fd44a105cb.dir
+md5: 895567e8d0c4620c118e75719dbe4371

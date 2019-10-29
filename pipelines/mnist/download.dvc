@@ -1,4 +1,4 @@
-cmd: "mlflow run . -e get_data \\\n\t\t\t-P type=fashion \\\n\t\t\t-P outdir=./data/mnist-raw"
+cmd: "mlflow run . -e get_data \\\n\t\t\t-P type=number \\\n\t\t\t-P outdir=./data/mnist-raw"
 wdir: ../..
 deps:
 - md5: f9793c1d798b3dff3a9f02c61f7ab593
@@ -8,5 +8,5 @@ outs:
   cache: true
   metric: false
   persist: false
-  md5: 23b0000338669d2c61217dbd94633aa0.dir
-md5: dc79fb235da0f3d9239d36a0ad6b8c14
+  md5: 0e2e30a88ab62ecb437f3b382285342f.dir
+md5: cb734e298eb5b1db1ab856b7be074f7e

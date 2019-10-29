@@ -1,15 +1,19 @@
-cmd: "mlflow run . -e package \\\n\t\t\t-P model_dir_in=models/raw \\\n\t\t\t-P model_dir_out=models/packaged\
-  \ \\\n\t\t\t-P mean=33.318 \\\n\t\t\t-P std=78.567"
+cmd: "mean=$(cat params/auto/explore.yaml | grep \"mean\" | sed \"s/[^0-9\\.]//g\"\
+  ) && \\\n\tstd=$(cat params/auto/explore.yaml | grep \"std\" | sed \"s/[^0-9\\.]//g\"\
+  ) && \\\n\tmlflow run . -e package \\\n\t\t\t-P model_dir_in=models/raw \\\n\t\t\
+  \t-P model_dir_out=models/packaged \\\n\t\t\t-P mean=$mean \\\n\t\t\t-P std=$std"
 wdir: ../..
 deps:
 - md5: 6f9df26d3c5700af4cab455b0a807edc
   path: src/package_model.py
-- md5: d751713988987e9331980363e24189ce.dir
+- md5: 7fd21799c25df878b64cd409f0272a72.dir
   path: models/raw
+- md5: bd6bc06b263012508b952d0a12f43c40
+  path: params/auto/explore.yaml
 outs:
 - path: models/packaged
   cache: true
   metric: false
   persist: false
-  md5: 45a59fe334b2dcc64543d7c4193727e2.dir
-md5: 86e85943ae1ba14bfafd384baeaa4ec9
+  md5: 9e43a54fa445fb4c5c2bfeaa9d11e1dc.dir
+md5: 43469d55be931c627117fdf52ba254cb

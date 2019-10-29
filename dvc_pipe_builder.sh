@@ -7,7 +7,7 @@ dvc run \
 	-o data/mnist-raw \
 	--no-exec \
 	'mlflow run . -e get_data \
-			-P type=fashion \
+			-P type=number \
 			-P outdir=./data/mnist-raw' 
 
 ### Explore Pipe ###
@@ -59,20 +59,22 @@ dvc run \
 	-f ./pipelines/mnist/package.dvc \
 	-d src/package_model.py \
 	-d models/raw \
+	-d params/auto/explore.yaml \
 	-o models/packaged \
 	--no-exec \
-	'mlflow run . -e package \
+	'mean=$(cat params/auto/explore.yaml | grep "mean" | sed "s/[^0-9\.]//g") && \
+	std=$(cat params/auto/explore.yaml | grep "std" | sed "s/[^0-9\.]//g") && \
+	mlflow run . -e package \
 			-P model_dir_in=models/raw \
 			-P model_dir_out=models/packaged \
-			-P mean=33.318 \
-			-P std=78.567'
+			-P mean=$mean \
+			-P std=$std'
 
 ### Server Pipe ###
 dvc run \
 	-f ./pipelines/mnist/server.dvc \
 	-d models/packaged \
 	--no-exec \
-	--always-changed \
 	'mlflow models serve -p 5001 -m ./models/packaged'
 
 ### Docker Build Pipe ###
@@ -80,7 +82,6 @@ dvc run \
 	-f ./pipelines/mnist/dockerbuild.dvc \
 	-d models/packaged \
 	--no-exec \
-	--always-changed \
 	'mlflow models build-docker -m ./models/packaged -n mnist_model'
 
 
